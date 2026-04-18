@@ -22,53 +22,31 @@ body{background:var(--bg);color:var(--text);font-family:'Syne',sans-serif;overfl
 #cur-ring{width:38px;height:38px;border:1px solid rgba(0,255,200,0.35);border-radius:50%;position:fixed;pointer-events:none;z-index:9998;}
 body:has(a:hover) #cur,body:has(button:hover) #cur{transform:scale(3);}
 
-/* ── GRAIN + GRID — GPU-optimised ── */
+/* ── BACKGROUND — static, no animation = zero lag ── */
 body::before{
   content:'';position:fixed;inset:0;
-  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
-  pointer-events:none;z-index:1000;opacity:0.35;
-  will-change:transform;
-  /* Slower = much less GPU work */
-  animation:grain 0.5s steps(1) infinite;
-}
-@keyframes grain{
-  0%{transform:translate(0,0)}
-  50%{transform:translate(-2%,2%)}
-  100%{transform:translate(2%,-2%)}
-}
-body::after{
-  content:'';position:fixed;inset:0;
-  background-image:
-    linear-gradient(rgba(0,255,200,0.015) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(0,255,200,0.015) 1px,transparent 1px);
-  background-size:80px 80px;
+  background:
+    radial-gradient(ellipse 55% 40% at 0% 0%, rgba(0,255,200,0.055) 0%, transparent 65%),
+    radial-gradient(ellipse 45% 40% at 100% 100%, rgba(162,89,255,0.045) 0%, transparent 65%);
   pointer-events:none;z-index:0;
+}
+/* Grid only on desktop, no animation */
+@media(min-width:901px){
+  body::after{
+    content:'';position:fixed;inset:0;
+    background-image:
+      linear-gradient(rgba(0,255,200,0.018) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(0,255,200,0.018) 1px,transparent 1px);
+    background-size:80px 80px;
+    pointer-events:none;z-index:0;
+  }
 }
 
-/* ── ORBS — GPU-optimised, reduced on mobile ── */
-.orb{
-  position:fixed;border-radius:50%;
-  pointer-events:none;z-index:0;
-  will-change:transform;
-  /* Use translate3d so browser composites on GPU */
-}
-.orb1{
-  width:500px;height:500px;
-  background:radial-gradient(circle,rgba(0,255,200,0.07),transparent 70%);
-  filter:blur(80px);
-  top:-200px;left:-150px;
-  animation:of1 28s ease-in-out infinite;
-}
-.orb2{
-  width:400px;height:400px;
-  background:radial-gradient(circle,rgba(162,89,255,0.06),transparent 70%);
-  filter:blur(80px);
-  bottom:-100px;right:-100px;
-  animation:of2 34s ease-in-out infinite;
-}
-/* orb3 removed — wasn't visible, just wasting GPU */
-@keyframes of1{0%,100%{transform:translate3d(0,0,0)}50%{transform:translate3d(80px,60px,0)}}
-@keyframes of2{0%,100%{transform:translate3d(0,0,0)}50%{transform:translate3d(-60px,-80px,0)}}
+/* ── ORBS — static, no animation, no blur on mobile ── */
+.orb{position:fixed;border-radius:50%;pointer-events:none;z-index:0;}
+.orb1{width:400px;height:400px;background:radial-gradient(circle,rgba(0,255,200,0.06),transparent 70%);filter:blur(70px);top:-180px;left:-120px;}
+.orb2{width:340px;height:340px;background:radial-gradient(circle,rgba(162,89,255,0.05),transparent 70%);filter:blur(70px);bottom:-100px;right:-100px;}
+@media(max-width:900px){.orb{display:none!important;}}
 
 /* ── LOADER ── */
 #loader{position:fixed;inset:0;background:var(--bg);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity 0.9s,visibility 0.9s;}
@@ -696,6 +674,18 @@ footer{position:relative;z-index:1;background:var(--bg);border-top:1px solid var
 }
 .fab-admin:hover,.fab-admin:active{border-color:var(--accent);color:var(--accent);}
 @media(max-width:900px){.fab-admin{display:flex;}}
+
+/* ── ADMIN EXTRAS ── */
+.font-chip{font-size:0.5rem;padding:7px 13px;border:1px solid var(--border2);cursor:pointer;letter-spacing:0.1em;transition:all 0.2s;color:var(--muted);background:none;}
+.font-chip:hover,.font-chip.on{border-color:var(--accent);color:var(--accent);background:rgba(0,255,200,0.05);}
+.color-swatch-wrap{display:flex;align-items:center;gap:10px;}
+.c-sw{width:38px;height:38px;border:1px solid var(--border2);cursor:pointer;position:relative;overflow:hidden;flex-shrink:0;}
+.c-sw input[type=color]{position:absolute;inset:-4px;opacity:0;cursor:pointer;width:140%;height:140%;}
+.c-lbl{font-size:0.58rem;color:var(--text);display:block;margin-bottom:2px;}
+.c-val{font-family:var(--font-mono,monospace);font-size:0.5rem;color:var(--muted);}
+input[type=range]{-webkit-appearance:none;height:2px;background:var(--border2);outline:none;border-radius:1px;}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:var(--accent);cursor:pointer;}
+.adm-tabs::-webkit-scrollbar{display:none;}
 </style>
 </head>
 <body>
@@ -860,12 +850,15 @@ footer{position:relative;z-index:1;background:var(--bg);border-top:1px solid var
       <div class="adm-title">⚡ COCO BUILDS — Admin</div>
       <button class="adm-close" onclick="closeAdmin()">✕ Close</button>
     </div>
-    <div class="adm-tabs">
-      <button class="adm-tab active" onclick="admTab('projects')">Projects</button>
-      <button class="adm-tab" onclick="admTab('services')">Services</button>
-      <button class="adm-tab" onclick="admTab('pricing')">Pricing</button>
-      <button class="adm-tab" onclick="admTab('inquiries')">Inquiries</button>
-      <button class="adm-tab" onclick="admTab('settings')">Settings</button>
+    <div class="adm-tabs" style="overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;">
+      <button class="adm-tab active" onclick="admTabSwitch(this,'tab-projects')">📁 Projects</button>
+      <button class="adm-tab" onclick="admTabSwitch(this,'tab-services')">⚙️ Services</button>
+      <button class="adm-tab" onclick="admTabSwitch(this,'tab-pricing')">💰 Pricing</button>
+      <button class="adm-tab" onclick="admTabSwitch(this,'tab-theme')">🎨 Colors</button>
+      <button class="adm-tab" onclick="admTabSwitch(this,'tab-fonts')">Aa Fonts</button>
+      <button class="adm-tab" onclick="admTabSwitch(this,'tab-text')">📝 Text</button>
+      <button class="adm-tab" onclick="admTabSwitch(this,'tab-inquiries')">📬 Inquiries</button>
+      <button class="adm-tab" onclick="admTabSwitch(this,'tab-settings')">⚙ Settings</button>
     </div>
     <div class="adm-body">
 
@@ -1014,8 +1007,10 @@ footer{position:relative;z-index:1;background:var(--bg);border-top:1px solid var
       src='https://my.spline.design/genkubgreetingrobot-O2RojUedDdpsPb9763CmLqxM/'
       frameborder='0' width='100%' height='100%'
       allow="autoplay; gyroscope; accelerometer"></iframe>
-    <!-- Cover the Spline watermark at bottom-right -->
-    <div style="position:absolute;bottom:0;right:0;width:160px;height:44px;background:var(--bg2);z-index:10;pointer-events:none;"></div>
+    <!-- Cover Spline watermark -->
+    <div style="position:absolute;bottom:0;right:0;width:200px;height:52px;background:var(--bg2);z-index:10;pointer-events:none;"></div>
+    <!-- Also cover top-right Spline logo -->
+    <div style="position:absolute;top:0;right:0;width:140px;height:44px;background:var(--bg2);z-index:10;pointer-events:none;"></div>
     <div class="gyro-hint">📱 Tilt phone to move the robot</div>
   </div>
 </section>
@@ -1715,6 +1710,216 @@ function showToast(msg){const t=document.getElementById('toast');t.textContent=m
 // KEYBOARD SHORTCUT — Ctrl+Shift+A
 // ════════════════════════════════════
 document.addEventListener('keydown',e=>{if(e.ctrlKey&&e.shiftKey&&e.key==='A'){e.preventDefault();openAdminLogin();}});
+
+
+// ═══════════════════════════════════════════
+// ADMIN TAB SWITCHER (new multi-tab system)
+// ═══════════════════════════════════════════
+function admTabSwitch(btn, secId){
+  // support old single-arg calls too
+  if(!secId) return;
+  document.querySelectorAll('.adm-tab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.adm-sec').forEach(s=>s.classList.remove('active'));
+  const sec = document.getElementById(secId);
+  if(sec) sec.classList.add('active');
+  // load data for new tabs
+  if(secId==='tab-theme') loadThemeTab();
+  if(secId==='tab-fonts') loadFontsTab();
+  if(secId==='tab-text')  loadTextTab();
+  if(secId==='tab-inquiries') renderAdminInquiries();
+  if(secId==='tab-settings') loadSettingsForm();
+}
+
+// ═══════════════════════════════════════════
+// THEME MANAGEMENT
+// ═══════════════════════════════════════════
+const COLOR_DEFS = [
+  {key:'--accent',   label:'Accent Color (main)',      def:'#00ffc8'},
+  {key:'--accent2',  label:'Accent 2 (purple)',         def:'#a259ff'},
+  {key:'--bg',       label:'Main Background',           def:'#020205'},
+  {key:'--bg2',      label:'Secondary Background',      def:'#07070e'},
+  {key:'--card',     label:'Card Background',           def:'#08081a'},
+  {key:'--border',   label:'Border Color',              def:'#14142a'},
+  {key:'--text',     label:'Text Color',                def:'#eaeaf8'},
+  {key:'--muted',    label:'Muted Text',                def:'#52527a'},
+];
+
+function getCSSVar(k){return getComputedStyle(document.documentElement).getPropertyValue(k).trim();}
+function setCSSVar(k,v){document.documentElement.style.setProperty(k,v);}
+
+function loadThemeTab(){
+  const cp = document.getElementById('color-pickers');
+  if(!cp) return;
+  cp.innerHTML = COLOR_DEFS.map(c=>{
+    const cur = getCSSVar(c.key)||c.def;
+    return `<div class="color-swatch-wrap">
+      <div class="c-sw" style="background:${cur}">
+        <input type="color" value="${cur}" oninput="liveColorChange('${c.key}',this.value,this.parentElement)">
+      </div>
+      <div>
+        <span class="c-lbl">${c.label}</span>
+        <span class="c-val" id="cv${c.key.replace('--','')}">${cur}</span>
+      </div>
+    </div>`;
+  }).join('');
+  // load custom CSS
+  const saved = S.get('customcss')||'';
+  const ta = document.getElementById('custom-css-ta');
+  if(ta) ta.value = saved;
+  // apply saved custom css
+  applyCustomCSS(saved);
+}
+
+function liveColorChange(cssVar, val, swatchEl){
+  setCSSVar(cssVar, val);
+  swatchEl.style.background = val;
+  const lbl = document.getElementById('cv'+cssVar.replace('--',''));
+  if(lbl) lbl.textContent = val;
+}
+
+function saveTheme(){
+  // Save all current CSS vars
+  const colors = {};
+  COLOR_DEFS.forEach(c=>{ colors[c.key] = getCSSVar(c.key)||c.def; });
+  S.set('themecolors', colors);
+  // Save custom CSS
+  const ta = document.getElementById('custom-css-ta');
+  const css = ta ? ta.value : '';
+  S.set('customcss', css);
+  applyCustomCSS(css);
+  showToast('✅ Theme saved!');
+}
+
+function applyCustomCSS(css){
+  let el = document.getElementById('__customcss');
+  if(!el){ el=document.createElement('style'); el.id='__customcss'; document.head.appendChild(el); }
+  el.textContent = css||'';
+}
+
+function resetTheme(){
+  if(!confirm('Reset colors to default?')) return;
+  S.del('themecolors'); S.del('customcss');
+  COLOR_DEFS.forEach(c=>document.documentElement.style.removeProperty(c.key));
+  applyCustomCSS('');
+  loadThemeTab();
+  showToast('Colors reset to default.');
+}
+
+function applySavedTheme(){
+  const colors = S.get('themecolors');
+  if(colors) Object.entries(colors).forEach(([k,v])=>setCSSVar(k,v));
+  const css = S.get('customcss')||'';
+  applyCustomCSS(css);
+}
+
+// ═══════════════════════════════════════════
+// FONT MANAGEMENT
+// ═══════════════════════════════════════════
+const FONT_OPTS = {
+  head: ['Bebas Neue','Oswald','Syne','Playfair Display'],
+  body: ['Syne','Space Mono','Georgia','Arial'],
+  mono: ['Space Mono','Courier New','Syne'],
+};
+const FONT_VARS = { head:'--font-head', body:'--font-body', mono:'--font-mono' };
+
+function loadFontsTab(){
+  const saved = S.get('fonts')||{};
+  ['head','body','mono'].forEach(type=>{
+    const el = document.getElementById('font-'+type+'-row');
+    if(!el) return;
+    const cur = saved[type]||(type==='head'?'Bebas Neue':type==='body'?'Syne':'Space Mono');
+    el.innerHTML = FONT_OPTS[type].map(fn=>`
+      <div class="font-chip${fn===cur?' on':''}" style="font-family:'${fn}',sans-serif"
+        onclick="pickFont('${type}','${fn}',this)">${fn}</div>`).join('');
+  });
+  const fs = saved.sizes||{};
+  const h1sl=document.getElementById('h1-sl'); if(h1sl){h1sl.value=fs.h1||60;document.getElementById('h1-v').textContent=(fs.h1||60)+'px';}
+  const bdsl=document.getElementById('bd-sl'); if(bdsl){bdsl.value=fs.body||14;document.getElementById('bd-v').textContent=(fs.body||14)+'px';}
+}
+
+function pickFont(type, fn, el){
+  const saved = S.get('fonts')||{};
+  saved[type] = fn;
+  S.set('fonts', saved);
+  document.querySelectorAll(`#font-${type}-row .font-chip`).forEach(c=>c.classList.remove('on'));
+  el.classList.add('on');
+  const cssVar = FONT_VARS[type];
+  setCSSVar(cssVar, `'${fn}',sans-serif`);
+}
+
+function liveH1(v){document.getElementById('h1-v').textContent=v+'px';document.querySelectorAll('h1').forEach(e=>e.style.fontSize=v+'px');}
+function liveBd(v){document.getElementById('bd-v').textContent=v+'px';document.body.style.fontSize=v+'px';}
+
+function saveFonts(){
+  const saved = S.get('fonts')||{};
+  const h1v = document.getElementById('h1-sl');
+  const bdv = document.getElementById('bd-sl');
+  saved.sizes = {h1:parseInt(h1v?.value||60), body:parseInt(bdv?.value||14)};
+  S.set('fonts',saved);
+  showToast('✅ Fonts saved!');
+}
+
+function applySavedFonts(){
+  const saved = S.get('fonts')||{};
+  if(saved.head) setCSSVar('--font-head',`'${saved.head}',sans-serif`);
+  if(saved.body) setCSSVar('--font-body',`'${saved.body}',sans-serif`);
+  if(saved.mono) setCSSVar('--font-mono',`'${saved.mono}',monospace`);
+  if(saved.sizes?.h1) document.querySelectorAll('h1').forEach(e=>e.style.fontSize=saved.sizes.h1+'px');
+  if(saved.sizes?.body) document.body.style.fontSize=saved.sizes.body+'px';
+}
+
+// ═══════════════════════════════════════════
+// TEXT CONTENT MANAGEMENT
+// ═══════════════════════════════════════════
+const TX_MAP = {
+  'tx-l1':  {sel:'h1 .l1',  attr:'textContent'},
+  'tx-l2':  {sel:'h1 .l2',  attr:'textContent'},
+  'tx-l3':  {sel:'h1 .l3',  attr:'textContent'},
+  'tx-tag': {sel:'.hero-tag span:last-child', attr:'textContent'},
+  'tx-desc':{sel:'#hero-desc', attr:'textContent'},
+  'tx-s1v': {sel:'#disp-s1', attr:'textContent'},
+  'tx-s1l': {sel:'.hero-stats .stat:nth-child(1) .stat-l', attr:'textContent'},
+  'tx-s2v': {sel:'#disp-s2', attr:'textContent'},
+  'tx-s2l': {sel:'.hero-stats .stat:nth-child(2) .stat-l', attr:'textContent'},
+  'tx-s3v': {sel:'#disp-s3', attr:'textContent'},  // fallback
+  'tx-s3l': {sel:'.hero-stats .stat:nth-child(3) .stat-l', attr:'textContent'},
+  'tx-copy':{sel:'footer .ft-copy', attr:'textContent'},
+};
+
+function loadTextTab(){
+  const saved = S.get('sitetext')||{};
+  Object.entries(TX_MAP).forEach(([id])=>{
+    const el = document.getElementById(id);
+    if(el && saved[id]) el.value = saved[id];
+  });
+  // Also load desc and copy from current DOM as fallback
+  if(!saved['tx-desc']){const d=document.getElementById('hero-desc');const el=document.getElementById('tx-desc');if(d&&el)el.value=d.textContent;}
+}
+
+function saveTxt(){
+  const saved={};
+  Object.entries(TX_MAP).forEach(([id,cfg])=>{
+    const inp=document.getElementById(id);
+    if(!inp) return;
+    const val=inp.value.trim();
+    if(!val) return;
+    saved[id]=val;
+    // Apply to DOM immediately
+    const targets=document.querySelectorAll(cfg.sel);
+    targets.forEach(t=>t.textContent=val);
+  });
+  S.set('sitetext',saved);
+  showToast('✅ Text saved & applied!');
+}
+
+function applySavedText(){
+  const saved=S.get('sitetext')||{};
+  Object.entries(TX_MAP).forEach(([id,cfg])=>{
+    if(!saved[id]) return;
+    document.querySelectorAll(cfg.sel).forEach(t=>t.textContent=saved[id]);
+  });
+}
 
 // ════════════════════════════════════
 // HAMBURGER MENU
