@@ -1,0 +1,1377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>COCO BUILDS — Freelance Developer | Chennai</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Bebas+Neue&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#020205;--bg2:#07070e;--bg3:#0d0d18;
+  --border:#14142a;--border2:#1c1c38;
+  --accent:#00ffc8;--accent2:#a259ff;--accent3:#ff3366;
+  --text:#eaeaf8;--muted:#52527a;--card:#08081a;
+  --glow:rgba(0,255,200,0.12);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Syne',sans-serif;overflow-x:hidden;cursor:none;}
+
+/* ── CURSOR ── */
+#cur{width:10px;height:10px;background:var(--accent);border-radius:50%;position:fixed;pointer-events:none;z-index:9999;mix-blend-mode:difference;transition:transform 0.15s;}
+#cur-ring{width:38px;height:38px;border:1px solid rgba(0,255,200,0.35);border-radius:50%;position:fixed;pointer-events:none;z-index:9998;}
+body:has(a:hover) #cur,body:has(button:hover) #cur{transform:scale(3);}
+
+/* ── GRAIN + GRID ── */
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:1000;opacity:0.45;animation:grain 0.18s steps(1) infinite;}
+@keyframes grain{0%{transform:translate(0,0)}20%{transform:translate(-2%,3%)}40%{transform:translate(3%,-2%)}60%{transform:translate(-3%,1%)}80%{transform:translate(2%,-3%)}100%{transform:translate(0,0)}}
+body::after{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(0,255,200,0.02) 1px,transparent 1px),linear-gradient(90deg,rgba(0,255,200,0.02) 1px,transparent 1px);background-size:70px 70px;pointer-events:none;z-index:0;}
+
+/* ── ORBS ── */
+.orb{position:fixed;border-radius:50%;filter:blur(110px);pointer-events:none;z-index:0;}
+.orb1{width:700px;height:700px;background:radial-gradient(circle,rgba(0,255,200,0.07),transparent 70%);top:-250px;left:-200px;animation:of1 22s ease-in-out infinite;}
+.orb2{width:500px;height:500px;background:radial-gradient(circle,rgba(162,89,255,0.07),transparent 70%);bottom:-150px;right:-150px;animation:of2 28s ease-in-out infinite;}
+.orb3{width:350px;height:350px;background:radial-gradient(circle,rgba(255,51,102,0.05),transparent 70%);top:55%;left:55%;animation:of3 19s ease-in-out infinite;}
+@keyframes of1{0%,100%{transform:translate(0,0)}50%{transform:translate(100px,70px)}}
+@keyframes of2{0%,100%{transform:translate(0,0)}50%{transform:translate(-80px,-100px)}}
+@keyframes of3{0%,100%{transform:translate(-50%,-50%) scale(1)}50%{transform:translate(-40%,-60%) scale(1.1)}}
+
+/* ── LOADER ── */
+#loader{position:fixed;inset:0;background:var(--bg);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity 0.9s,visibility 0.9s;}
+#loader.hide{opacity:0;visibility:hidden;}
+.ld-logo{font-family:'Bebas Neue',sans-serif;font-size:clamp(3rem,10vw,9rem);letter-spacing:0.12em;line-height:1;text-align:center;}
+.ld-logo .cc{color:var(--accent);text-shadow:0 0 50px rgba(0,255,200,0.6);animation:ldPulse 0.8s ease-in-out infinite alternate;}
+.ld-logo .bb{color:var(--border2);}
+@keyframes ldPulse{from{opacity:0.3;letter-spacing:0.08em}to{opacity:1;letter-spacing:0.16em}}
+.ld-bar{width:220px;height:1px;background:var(--border2);margin-top:28px;overflow:hidden;}
+.ld-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));width:0%;box-shadow:0 0 12px var(--accent);}
+.ld-sub{font-family:'Space Mono',monospace;font-size:0.52rem;color:var(--muted);letter-spacing:0.35em;text-transform:uppercase;margin-top:14px;}
+
+/* ── SCROLL PROGRESS ── */
+.scprog{position:fixed;top:0;left:0;height:2px;background:linear-gradient(90deg,var(--accent),var(--accent2));z-index:600;box-shadow:0 0 8px var(--accent);transition:width 0.08s;}
+
+/* ── NAV ── */
+nav{position:fixed;top:0;left:0;right:0;z-index:500;display:flex;align-items:center;justify-content:space-between;padding:16px 60px;background:rgba(2,2,5,0.88);backdrop-filter:blur(28px);border-bottom:1px solid var(--border);}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:1.7rem;color:var(--accent);text-decoration:none;letter-spacing:0.12em;text-shadow:0 0 24px rgba(0,255,200,0.4);}
+.logo span{color:var(--muted);}
+nav ul{display:flex;gap:28px;list-style:none;}
+nav ul a{font-family:'Space Mono',monospace;font-size:0.6rem;color:var(--muted);text-decoration:none;letter-spacing:0.2em;text-transform:uppercase;position:relative;transition:color 0.2s;}
+nav ul a::after{content:'';position:absolute;bottom:-3px;left:0;width:0;height:1px;background:var(--accent);transition:width 0.3s;box-shadow:0 0 6px var(--accent);}
+nav ul a:hover{color:var(--accent);}
+nav ul a:hover::after{width:100%;}
+.nav-cta{font-family:'Space Mono',monospace;font-size:0.62rem;padding:10px 22px;background:transparent;border:1px solid var(--accent);color:var(--accent);letter-spacing:0.15em;text-transform:uppercase;cursor:none;text-decoration:none;transition:all 0.25s;position:relative;overflow:hidden;}
+.nav-cta::before{content:'';position:absolute;inset:0;background:var(--accent);transform:translateX(-101%);transition:transform 0.3s;z-index:-1;}
+.nav-cta:hover{color:var(--bg);}
+.nav-cta:hover::before{transform:translateX(0);}
+
+/* ══════════════════════════════════════
+   CINEMATIC AD OVERLAY
+══════════════════════════════════════ */
+#ad-overlay{position:fixed;inset:0;z-index:8000;background:#000;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+#ad-overlay.done{pointer-events:none;animation:adOut 1.2s 0.2s forwards;}
+@keyframes adOut{to{opacity:0;visibility:hidden;}}
+.ad-scanlines{position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,0.09) 3px,rgba(0,0,0,0.09) 6px);z-index:50;pointer-events:none;}
+.ad-vig{position:absolute;inset:0;background:radial-gradient(ellipse at center,transparent 38%,rgba(0,0,0,0.96) 100%);z-index:40;pointer-events:none;}
+.ad-lbars{position:absolute;top:0;left:0;right:0;height:55px;background:#000;z-index:45;}
+.ad-bbars{position:absolute;bottom:0;left:0;right:0;height:55px;background:#000;z-index:45;}
+.ad-flash{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none;z-index:100;}
+.ad-prog{position:absolute;bottom:55px;left:40px;right:40px;height:1px;background:rgba(255,255,255,0.06);z-index:60;}
+.ad-pfill{height:100%;background:var(--accent);width:0;box-shadow:0 0 10px var(--accent);}
+.ad-skip{position:absolute;bottom:18px;right:30px;font-family:'Space Mono',monospace;font-size:0.58rem;color:var(--muted);letter-spacing:0.2em;text-transform:uppercase;border:1px solid var(--border2);padding:7px 16px;cursor:pointer;background:rgba(0,0,0,0.6);transition:all 0.2s;z-index:200;}
+.ad-skip:hover{border-color:var(--accent);color:var(--accent);}
+.ad-scene{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;transition:opacity 0.05s;}
+.ad-scene.on{opacity:1;visibility:visible;}
+
+/* AD scene styles */
+/* S1 — ugly website */
+.s1-browser{width:min(60%,520px);background:#f2f0ee;border-radius:5px;overflow:hidden;box-shadow:0 0 80px rgba(0,0,0,0.9);}
+.s1-chrome{height:30px;background:#e4e1de;display:flex;align-items:center;padding:0 12px;gap:6px;border-bottom:1px solid #ccc;}
+.s1-dot{width:10px;height:10px;border-radius:50%;}
+.s1-dot.r{background:#ff5f57;}.s1-dot.y{background:#febc2e;}.s1-dot.g{background:#28c840;}
+.s1-url{flex:1;background:#fff;height:15px;border-radius:8px;margin:0 8px;border:1px solid #ddd;display:flex;align-items:center;padding:0 8px;font-size:7.5px;color:#888;font-family:monospace;}
+.s1-body{padding:16px;background:#fff;}
+.s1-hdr{height:36px;background:linear-gradient(90deg,#2c3e50,#3498db);display:flex;align-items:center;padding:0 14px;margin-bottom:10px;}
+.s1-hdr-txt{font-size:10px;color:#fff;font-family:Arial;font-weight:bold;letter-spacing:1px;}
+.s1-main{display:flex;gap:8px;}
+.s1-sidebar{width:70px;background:#f5f5f5;border:1px solid #ddd;padding:8px;font-size:6.5px;color:#555;font-family:Arial;line-height:2;}
+.s1-content{flex:1;padding:8px;font-size:6.5px;color:#333;font-family:Arial;line-height:2;border:1px solid #ddd;}
+.s1-ftr{height:18px;background:#2c3e50;display:flex;align-items:center;padding:0 10px;margin-top:8px;}
+.s1-ftr-txt{font-size:5.5px;color:#666;font-family:Arial;}
+.s1-spin{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:28px;height:28px;border:3px solid rgba(52,152,219,0.2);border-top-color:#3498db;border-radius:50%;animation:spin 1.4s linear infinite;}
+@keyframes spin{to{transform:translate(-50%,-50%) rotate(360deg)}}
+.s1-caption{position:absolute;bottom:80px;left:50%;transform:translateX(-50%);font-family:'Bebas Neue',sans-serif;font-size:clamp(1.8rem,4vw,3.5rem);color:#fff;letter-spacing:0.05em;text-align:center;white-space:nowrap;text-shadow:0 2px 20px rgba(0,0,0,0.8);opacity:0;transition:opacity 0.4s;}
+.s1-caption .hl{color:#ff3366;}
+
+/* S2 — pain */
+.s2-c{text-align:center;z-index:10;position:relative;padding:0 40px;}
+.s2-emo{font-size:clamp(3.5rem,8vw,6.5rem);display:block;margin-bottom:18px;}
+.s2-big{font-family:'Bebas Neue',sans-serif;font-size:clamp(3rem,8vw,7rem);color:#fff;line-height:0.88;letter-spacing:0.02em;}
+.s2-big .red{color:#ff3366;}
+.s2-sub{font-family:'Space Mono',monospace;font-size:clamp(0.55rem,1.4vw,0.78rem);color:rgba(255,255,255,0.35);letter-spacing:0.25em;text-transform:uppercase;margin-top:14px;}
+.s2-ctr{font-family:'Bebas Neue',sans-serif;font-size:clamp(1.2rem,3vw,2.2rem);color:#ff3366;margin-top:10px;letter-spacing:0.1em;}
+
+/* S3 — glitch */
+.s3-word{font-family:'Bebas Neue',sans-serif;font-size:clamp(5rem,18vw,14rem);color:var(--accent);letter-spacing:0.05em;text-shadow:0 0 50px rgba(0,255,200,0.5);animation:glitch 0.25s steps(1) infinite;position:relative;z-index:2;}
+.s3-shadow{position:absolute;font-family:'Bebas Neue',sans-serif;font-size:clamp(5rem,18vw,14rem);color:#ff3366;letter-spacing:0.05em;transform:translate(6px,6px);opacity:0.5;z-index:1;}
+@keyframes glitch{
+  0%{clip-path:inset(0 0 95% 0);transform:translate(0)}
+  12%{clip-path:inset(8% 0 55% 0);transform:translate(-4px,2px)}
+  25%{clip-path:inset(45% 0 28% 0);transform:translate(4px,-2px)}
+  37%{clip-path:inset(75% 0 8% 0);transform:translate(-3px,3px)}
+  50%{clip-path:inset(25% 0 48% 0);transform:translate(3px,-3px)}
+  62%{clip-path:inset(55% 0 18% 0);transform:translate(-2px,2px)}
+  75%{clip-path:inset(18% 0 62% 0);transform:translate(2px,-1px)}
+  87%{clip-path:inset(88% 0 3% 0);transform:translate(-1px,3px)}
+  100%{clip-path:inset(0 0 0% 0);transform:translate(0)}
+}
+
+/* S4 — solution */
+.s4-wrap{text-align:center;z-index:10;position:relative;}
+.s4-tag{font-family:'Space Mono',monospace;font-size:0.6rem;color:var(--accent);letter-spacing:0.45em;text-transform:uppercase;margin-bottom:22px;opacity:0;transform:translateY(8px);transition:all 0.5s;}
+.s4-tag.vis{opacity:1;transform:translateY(0);}
+.s4-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(3rem,9vw,8rem);line-height:0.86;letter-spacing:0.02em;}
+.s4-ln{display:block;opacity:0;transform:translateX(-50px);transition:all 0.55s cubic-bezier(0.175,0.885,0.32,1.275);}
+.s4-ln.vis{opacity:1;transform:translateX(0);}
+.s4-w{color:#fff;}.s4-g{background:linear-gradient(90deg,var(--accent),#00b8ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}.s4-d{color:rgba(255,255,255,0.18);}
+.s4-sub{font-family:'Space Mono',monospace;font-size:clamp(0.55rem,1.4vw,0.72rem);color:rgba(255,255,255,0.3);letter-spacing:0.18em;text-transform:uppercase;margin-top:22px;opacity:0;transition:opacity 0.5s 0.55s;}
+.s4-sub.vis{opacity:1;}
+
+/* S5 — features */
+.s5-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px;width:min(80%,680px);position:relative;z-index:10;}
+.s5-f{background:rgba(0,255,200,0.03);border:1px solid rgba(0,255,200,0.08);padding:24px 26px;display:flex;align-items:center;gap:16px;opacity:0;transform:scale(0.88);transition:opacity 0.35s,transform 0.35s cubic-bezier(0.175,0.885,0.32,1.275);}
+.s5-f.vis{opacity:1;transform:scale(1);}
+.s5-ico{font-size:1.9rem;flex-shrink:0;}
+.s5-nm{font-family:'Bebas Neue',sans-serif;font-size:clamp(1.3rem,3vw,2.2rem);color:#fff;letter-spacing:0.04em;}
+.s5-ds{font-family:'Space Mono',monospace;font-size:0.54rem;color:var(--muted);letter-spacing:0.1em;margin-top:2px;}
+
+/* S6 — social proof */
+.s6-wrap{width:min(82%,680px);z-index:10;position:relative;}
+.s6-lbl{font-family:'Space Mono',monospace;font-size:0.55rem;color:var(--accent);letter-spacing:0.45em;text-transform:uppercase;margin-bottom:22px;}
+.s6-msgs{display:flex;flex-direction:column;gap:11px;}
+.s6-msg{background:rgba(255,255,255,0.025);border:1px solid rgba(255,255,255,0.07);border-left:2px solid var(--accent);padding:14px 18px;display:flex;gap:14px;opacity:0;transform:translateX(-24px);transition:all 0.45s;}
+.s6-msg.vis{opacity:1;transform:translateX(0);}
+.s6-av{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-size:0.62rem;font-weight:700;color:var(--bg);flex-shrink:0;}
+.s6-nm{font-size:0.75rem;font-weight:700;color:#fff;margin-bottom:3px;}
+.s6-st{color:gold;font-size:0.6rem;margin-bottom:3px;}
+.s6-tx{font-family:'Space Mono',monospace;font-size:0.58rem;color:rgba(255,255,255,0.45);line-height:1.65;}
+
+/* S7 — CTA */
+.s7-wrap{text-align:center;z-index:10;position:relative;padding:0 40px;}
+.s7-stop{font-family:'Space Mono',monospace;font-size:clamp(0.55rem,1.2vw,0.7rem);color:var(--accent);letter-spacing:0.5em;text-transform:uppercase;margin-bottom:16px;opacity:0;transition:opacity 0.4s;}
+.s7-stop.vis{opacity:1;}
+.s7-logo{font-family:'Bebas Neue',sans-serif;font-size:clamp(4rem,13vw,11rem);color:#fff;letter-spacing:0.06em;line-height:0.85;text-shadow:0 0 80px rgba(0,255,200,0.25);opacity:0;transform:scale(0.75);transition:all 0.6s cubic-bezier(0.175,0.885,0.32,1.275);}
+.s7-logo.vis{opacity:1;transform:scale(1);}
+.s7-logo .dot{color:var(--accent);}
+.s7-sub{font-family:'Space Mono',monospace;font-size:clamp(0.58rem,1.3vw,0.7rem);color:rgba(255,255,255,0.28);letter-spacing:0.22em;margin-top:10px;opacity:0;transition:opacity 0.4s 0.35s;}
+.s7-sub.vis{opacity:1;}
+.s7-div{width:0;height:1px;background:var(--border2);margin:22px auto;transition:width 0.9s 0.45s;}
+.s7-div.vis{width:280px;}
+.s7-btns{display:flex;gap:14px;justify-content:center;margin-top:22px;opacity:0;transform:translateY(18px);transition:all 0.45s 0.65s;}
+.s7-btns.vis{opacity:1;transform:translateY(0);}
+.s7-bp{font-family:'Space Mono',monospace;font-size:0.68rem;padding:14px 30px;background:var(--accent);color:var(--bg);border:none;letter-spacing:0.15em;text-transform:uppercase;font-weight:700;cursor:pointer;box-shadow:0 0 32px rgba(0,255,200,0.35);transition:all 0.2s;}
+.s7-bp:hover{box-shadow:0 0 60px rgba(0,255,200,0.6);transform:translateY(-3px);}
+.s7-bg{font-family:'Space Mono',monospace;font-size:0.68rem;padding:14px 30px;background:transparent;color:var(--accent);border:1px solid var(--accent);cursor:pointer;letter-spacing:0.15em;text-transform:uppercase;transition:all 0.2s;}
+.s7-bg:hover{background:rgba(0,255,200,0.08);}
+.s7-contact{font-family:'Space Mono',monospace;font-size:0.58rem;color:rgba(255,255,255,0.18);letter-spacing:0.12em;margin-top:14px;opacity:0;transition:opacity 0.4s 0.85s;}
+.s7-contact.vis{opacity:1;}
+.s7-killer{font-family:'Bebas Neue',sans-serif;font-size:clamp(1rem,2.5vw,1.9rem);color:rgba(255,255,255,0.1);letter-spacing:0.04em;max-width:600px;line-height:1.3;margin-top:20px;opacity:0;transition:opacity 0.4s 1s;}
+.s7-killer.vis{opacity:1;}
+.s7-killer em{color:rgba(255,255,255,0.28);font-style:normal;}
+
+/* ══════════════════════════════════════
+   HERO
+══════════════════════════════════════ */
+#hero{position:relative;min-height:100vh;display:grid;grid-template-columns:1fr 1fr;align-items:center;z-index:1;overflow:hidden;}
+.hero-left{padding:120px 48px 80px 80px;display:flex;flex-direction:column;position:relative;z-index:2;}
+.hero-tag{font-family:'Space Mono',monospace;font-size:0.58rem;color:var(--accent);letter-spacing:0.4em;text-transform:uppercase;margin-bottom:26px;display:flex;align-items:center;gap:12px;}
+.sdot{display:inline-block;width:8px;height:8px;background:var(--accent);border-radius:50%;box-shadow:0 0 14px var(--accent);animation:sdotpulse 2s ease-in-out infinite;}
+@keyframes sdotpulse{0%,100%{opacity:1;box-shadow:0 0 14px var(--accent);}50%{opacity:0.3;box-shadow:0 0 4px var(--accent);}}
+h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(3.5rem,5.8vw,6.2rem);line-height:0.88;letter-spacing:0.03em;margin-bottom:24px;}
+h1 .l1{display:block;color:var(--text);}
+h1 .l2{display:block;background:linear-gradient(90deg,var(--accent),#00aaff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 22px rgba(0,255,200,0.28));}
+h1 .l3{display:block;color:var(--muted);}
+.hero-desc{font-family:'Space Mono',monospace;font-size:0.7rem;color:var(--muted);line-height:2.1;max-width:460px;margin-bottom:30px;}
+.hero-contact-row{display:flex;flex-direction:column;gap:9px;margin-bottom:34px;}
+.hci{display:flex;align-items:center;gap:10px;font-family:'Space Mono',monospace;font-size:0.67rem;color:var(--muted);text-decoration:none;transition:color 0.2s;}
+.hci:hover{color:var(--accent);}
+.hc-icon{width:28px;height:28px;border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:0.75rem;color:var(--accent);flex-shrink:0;}
+.hero-actions{display:flex;gap:12px;margin-bottom:46px;flex-wrap:wrap;}
+.btn-p{font-family:'Space Mono',monospace;font-size:0.7rem;padding:14px 28px;background:var(--accent);color:var(--bg);border:none;letter-spacing:0.15em;text-transform:uppercase;font-weight:700;cursor:none;text-decoration:none;display:inline-block;transition:all 0.2s;box-shadow:0 0 22px rgba(0,255,200,0.18);}
+.btn-p:hover{box-shadow:0 0 44px rgba(0,255,200,0.45);transform:translateY(-2px);}
+.btn-g{font-family:'Space Mono',monospace;font-size:0.7rem;padding:14px 28px;background:transparent;color:var(--accent);border:1px solid rgba(0,255,200,0.28);letter-spacing:0.15em;text-transform:uppercase;cursor:none;text-decoration:none;display:inline-block;transition:all 0.2s;}
+.btn-g:hover{border-color:var(--accent);background:rgba(0,255,200,0.05);}
+.hero-stats{display:flex;gap:30px;padding-top:30px;border-top:1px solid var(--border);}
+.stat-n{font-family:'Bebas Neue',sans-serif;font-size:2.6rem;color:var(--accent);line-height:1;text-shadow:0 0 22px rgba(0,255,200,0.35);}
+.stat-l{font-family:'Space Mono',monospace;font-size:0.5rem;color:var(--muted);letter-spacing:0.2em;text-transform:uppercase;margin-top:4px;}
+.hero-right{position:relative;height:100vh;overflow:hidden;}
+.hero-right iframe{position:absolute;inset:-5%;width:110%;height:110%;border:none;}
+.hero-right::after{content:'';position:absolute;left:0;top:0;bottom:0;width:130px;background:linear-gradient(90deg,var(--bg),transparent);z-index:2;}
+
+/* ── MARQUEE ── */
+.mq{position:relative;z-index:1;border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:12px 0;overflow:hidden;background:rgba(0,255,200,0.015);}
+.mq-track{display:flex;white-space:nowrap;animation:mq 28s linear infinite;}
+.mq-item{font-family:'Space Mono',monospace;font-size:0.58rem;color:var(--muted);letter-spacing:0.22em;text-transform:uppercase;padding:0 30px;display:flex;align-items:center;gap:12px;}
+.mqdot{width:4px;height:4px;background:var(--accent);border-radius:50%;flex-shrink:0;box-shadow:0 0 6px var(--accent);}
+@keyframes mq{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* ══════════════════════════════════════
+   SECTION COMMON
+══════════════════════════════════════ */
+section{position:relative;z-index:1;padding:120px 80px;}
+.stag{font-family:'Space Mono',monospace;font-size:0.54rem;color:var(--accent);letter-spacing:0.42em;text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:10px;}
+.stag::before{content:'';width:18px;height:1px;background:var(--accent);box-shadow:0 0 6px var(--accent);}
+.stitle{font-family:'Bebas Neue',sans-serif;font-size:clamp(2.5rem,5vw,5rem);line-height:0.88;letter-spacing:0.02em;margin-bottom:56px;}
+.stitle span{color:var(--muted);}
+.fade-up{opacity:0;transform:translateY(28px);transition:opacity 0.7s ease,transform 0.7s ease;}
+.fade-up.visible{opacity:1;transform:translateY(0);}
+
+/* ══════════════════════════════════════
+   SERVICES
+══════════════════════════════════════ */
+#services{background:var(--bg2);}
+.svc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;border:1px solid var(--border);}
+.svc-card{background:var(--card);padding:38px 30px;position:relative;overflow:hidden;transition:background 0.3s;}
+.svc-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent),var(--accent2));transform:scaleX(0);transform-origin:left;transition:transform 0.4s;}
+.svc-card:hover::before{transform:scaleX(1);}
+.svc-card:hover{background:rgba(0,255,200,0.02);}
+.svc-num{font-family:'Bebas Neue',sans-serif;font-size:3.5rem;color:var(--border2);line-height:1;margin-bottom:14px;}
+.svc-ico{font-size:1.8rem;display:block;margin-bottom:12px;}
+.svc-name{font-size:1.08rem;font-weight:700;margin-bottom:10px;letter-spacing:-0.01em;}
+.svc-desc{font-family:'Space Mono',monospace;font-size:0.58rem;color:var(--muted);line-height:2;margin-bottom:18px;}
+.svc-price{font-family:'Space Mono',monospace;font-size:0.58rem;color:var(--accent);padding-top:14px;border-top:1px solid var(--border);}
+
+/* ══════════════════════════════════════
+   PROJECTS — real ones
+══════════════════════════════════════ */
+#portfolio{background:var(--bg);}
+.proj-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;border:1px solid var(--border);}
+.pj-card{background:var(--card);overflow:hidden;transition:background 0.3s;position:relative;}
+.pj-card:hover{background:rgba(0,255,200,0.02);}
+.pj-img{height:190px;background:var(--bg3);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;}
+.pj-img::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(0,255,200,0.04),rgba(162,89,255,0.04));}
+.mock{width:80%;height:80%;background:var(--bg);border:1px solid var(--border2);border-radius:3px;overflow:hidden;box-shadow:0 8px 30px rgba(0,0,0,0.6);}
+.mock-top{height:22px;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 10px;gap:5px;}
+.md{width:6px;height:6px;border-radius:50%;}
+.md.r{background:#ff5f57;}.md.y{background:#febc2e;}.md.g{background:#28c840;}
+.mock-body{padding:9px;font-family:'Space Mono',monospace;font-size:0.4rem;line-height:2;opacity:0.75;}
+.pj-info{padding:22px 22px 26px;}
+.pj-tags{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:9px;}
+.tag{font-family:'Space Mono',monospace;font-size:0.46rem;padding:3px 8px;background:rgba(0,255,200,0.05);border:1px solid rgba(0,255,200,0.13);color:var(--accent);letter-spacing:0.1em;text-transform:uppercase;}
+.pj-name{font-size:0.98rem;font-weight:700;margin-bottom:5px;}
+.pj-desc{font-family:'Space Mono',monospace;font-size:0.57rem;color:var(--muted);line-height:1.85;}
+.pj-links{display:flex;gap:10px;margin-top:10px;flex-wrap:wrap;}
+.pj-link{font-family:'Space Mono',monospace;font-size:0.52rem;color:var(--accent);text-decoration:none;border-bottom:1px solid rgba(0,255,200,0.25);padding-bottom:1px;transition:border-color 0.2s;}
+.pj-link:hover{border-color:var(--accent);}
+
+/* ══════════════════════════════════════
+   COCO BOT PATENT HIGHLIGHT
+══════════════════════════════════════ */
+#cocobot{background:var(--bg2);position:relative;z-index:1;padding:100px 80px;overflow:hidden;}
+#cocobot::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 60% 50%,rgba(0,255,200,0.05),transparent 70%);}
+.cb-inner{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;}
+.cb-left{}
+.cb-badge{display:inline-flex;align-items:center;gap:8px;font-family:'Space Mono',monospace;font-size:0.52rem;color:var(--accent);letter-spacing:0.3em;text-transform:uppercase;border:1px solid rgba(0,255,200,0.2);padding:8px 14px;background:rgba(0,255,200,0.04);margin-bottom:24px;}
+.cb-badge span{width:8px;height:8px;background:var(--accent);border-radius:50%;box-shadow:0 0 10px var(--accent);}
+.cb-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(3rem,5vw,5.5rem);line-height:0.88;letter-spacing:0.02em;margin-bottom:20px;}
+.cb-title .green{color:var(--accent);}
+.cb-title .dim{color:var(--muted);}
+.cb-sub{font-family:'Space Mono',monospace;font-size:0.65rem;color:var(--muted);line-height:2.1;margin-bottom:28px;max-width:480px;}
+.cb-features{display:flex;flex-direction:column;gap:10px;margin-bottom:30px;}
+.cb-feat{display:flex;align-items:flex-start;gap:12px;font-family:'Space Mono',monospace;font-size:0.6rem;color:var(--muted);line-height:1.6;}
+.cb-feat::before{content:'→';color:var(--accent);flex-shrink:0;margin-top:1px;}
+.cb-link{display:inline-flex;align-items:center;gap:8px;font-family:'Space Mono',monospace;font-size:0.65rem;color:var(--bg);background:var(--accent);padding:12px 24px;text-decoration:none;letter-spacing:0.15em;text-transform:uppercase;font-weight:700;transition:opacity 0.2s;box-shadow:0 0 22px rgba(0,255,200,0.25);}
+.cb-link:hover{opacity:0.85;}
+.cb-right{position:relative;}
+.cb-card{background:var(--card);border:1px solid var(--border2);padding:32px;position:relative;overflow:hidden;}
+.cb-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent),var(--accent2));}
+.cb-card-title{font-family:'Bebas Neue',sans-serif;font-size:1.8rem;color:#fff;letter-spacing:0.05em;margin-bottom:6px;}
+.cb-inventor{font-family:'Space Mono',monospace;font-size:0.58rem;color:var(--muted);letter-spacing:0.2em;text-transform:uppercase;margin-bottom:20px;}
+.cb-spec-list{list-style:none;display:flex;flex-direction:column;gap:8px;}
+.cb-spec-list li{font-family:'Space Mono',monospace;font-size:0.6rem;color:var(--muted);display:flex;gap:10px;line-height:1.5;}
+.cb-spec-list li span:first-child{color:var(--accent);flex-shrink:0;width:20px;font-size:0.7rem;}
+.cb-patent-stamp{position:absolute;bottom:20px;right:20px;font-family:'Bebas Neue',sans-serif;font-size:0.65rem;color:rgba(0,255,200,0.1);letter-spacing:0.3em;text-transform:uppercase;border:1px solid rgba(0,255,200,0.06);padding:6px 12px;transform:rotate(-8deg);}
+
+/* ══════════════════════════════════════
+   PROCESS
+══════════════════════════════════════ */
+#process{background:var(--bg);}
+.proc-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;border:1px solid var(--border);}
+.ps{background:var(--card);padding:34px 26px;position:relative;}
+.ps-num{font-family:'Bebas Neue',sans-serif;font-size:3.8rem;color:var(--border2);line-height:1;margin-bottom:14px;}
+.ps-title{font-size:0.98rem;font-weight:700;margin-bottom:9px;}
+.ps-desc{font-family:'Space Mono',monospace;font-size:0.58rem;color:var(--muted);line-height:1.95;}
+.ps-arr{position:absolute;top:50%;right:-13px;transform:translateY(-50%);width:26px;height:26px;background:var(--bg);border:1px solid var(--accent);display:flex;align-items:center;justify-content:center;font-size:0.65rem;color:var(--accent);z-index:2;box-shadow:0 0 10px rgba(0,255,200,0.18);}
+
+/* ══════════════════════════════════════
+   PRICING
+══════════════════════════════════════ */
+#pricing{background:var(--bg2);}
+.pr-note{font-family:'Space Mono',monospace;font-size:0.63rem;color:var(--muted);margin-bottom:44px;padding:16px 20px;border-left:2px solid var(--accent);background:rgba(0,255,200,0.03);line-height:2;max-width:640px;}
+.pr-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;border:1px solid var(--border);}
+.pr-card{background:var(--card);padding:38px 30px;position:relative;transition:background 0.3s;}
+.pr-card:hover{background:rgba(0,255,200,0.02);}
+.pr-card.feat{background:rgba(0,255,200,0.04);border:1px solid rgba(0,255,200,0.18);box-shadow:0 0 60px rgba(0,255,200,0.04);}
+.pr-badge{position:absolute;top:-1px;right:24px;font-family:'Space Mono',monospace;font-size:0.5rem;padding:5px 13px;background:var(--accent);color:var(--bg);letter-spacing:0.15em;text-transform:uppercase;font-weight:700;}
+.pr-tier{font-family:'Space Mono',monospace;font-size:0.54rem;color:var(--muted);letter-spacing:0.28em;text-transform:uppercase;margin-bottom:14px;}
+.pr-amt{font-family:'Bebas Neue',sans-serif;font-size:3.4rem;line-height:1;letter-spacing:-0.02em;margin-bottom:5px;}
+.pr-cur{font-size:1.2rem;color:var(--muted);vertical-align:top;margin-top:7px;display:inline-block;}
+.pr-sub{font-family:'Space Mono',monospace;font-size:0.57rem;color:var(--muted);margin-bottom:26px;}
+.pr-feats{list-style:none;margin-bottom:32px;display:flex;flex-direction:column;gap:11px;}
+.pr-feats li{font-family:'Space Mono',monospace;font-size:0.59rem;color:var(--muted);display:flex;align-items:flex-start;gap:9px;line-height:1.6;}
+.pr-feats li::before{content:'→';color:var(--accent);flex-shrink:0;}
+.pr-feats li.y{color:var(--text);}
+.btn-hire{width:100%;font-family:'Space Mono',monospace;font-size:0.63rem;padding:13px;background:transparent;color:var(--accent);border:1px solid rgba(0,255,200,0.28);letter-spacing:0.14em;text-transform:uppercase;font-weight:700;cursor:none;transition:all 0.2s;}
+.btn-hire:hover,.pr-card.feat .btn-hire{background:var(--accent);color:var(--bg);box-shadow:0 0 20px rgba(0,255,200,0.28);}
+
+/* ══════════════════════════════════════
+   BOOKING / RAZORPAY
+══════════════════════════════════════ */
+#book{background:var(--bg);}
+.bk-wrap{max-width:680px;border:1px solid var(--border);background:var(--card);padding:46px;}
+.bk-intro{font-family:'Space Mono',monospace;font-size:0.66rem;color:var(--muted);line-height:2.1;margin-bottom:34px;}
+.pkg-sel{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;border:1px solid var(--border);margin-bottom:26px;}
+.pkg-opt{padding:18px;background:var(--bg3);border:2px solid transparent;cursor:pointer;transition:all 0.2s;text-align:center;}
+.pkg-opt:hover,.pkg-opt.active{background:rgba(0,255,200,0.05);border-color:var(--accent);}
+.pkg-name{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;color:#fff;letter-spacing:0.05em;}
+.pkg-price{font-family:'Space Mono',monospace;font-size:0.62rem;color:var(--accent);margin-top:5px;}
+.bk-form{display:flex;flex-direction:column;gap:13px;}
+.bf-row{display:grid;grid-template-columns:1fr 1fr;gap:13px;}
+.bf-grp{display:flex;flex-direction:column;gap:6px;}
+.bf-lbl{font-family:'Space Mono',monospace;font-size:0.53rem;color:var(--muted);letter-spacing:0.22em;text-transform:uppercase;}
+.bf-in,.bf-ta,.bf-sel{background:var(--bg3);border:1px solid var(--border2);color:var(--text);font-family:'Space Mono',monospace;font-size:0.68rem;padding:12px 14px;outline:none;transition:border-color 0.2s;resize:none;cursor:none;width:100%;}
+.bf-in:focus,.bf-ta:focus,.bf-sel:focus{border-color:var(--accent);}
+.bf-in::placeholder,.bf-ta::placeholder{color:var(--muted);}
+.bf-ta{height:95px;}
+.bf-sel{appearance:none;}
+.btn-pay{font-family:'Space Mono',monospace;font-size:0.73rem;padding:15px;background:var(--accent);color:var(--bg);border:none;letter-spacing:0.15em;text-transform:uppercase;font-weight:700;cursor:none;width:100%;transition:all 0.2s;box-shadow:0 0 22px rgba(0,255,200,0.18);}
+.btn-pay:hover{box-shadow:0 0 44px rgba(0,255,200,0.45);transform:translateY(-2px);}
+.pay-note{font-family:'Space Mono',monospace;font-size:0.5rem;color:var(--muted);text-align:center;margin-top:10px;line-height:1.7;}
+
+/* ══════════════════════════════════════
+   CONTACT
+══════════════════════════════════════ */
+#contact{background:var(--bg2);}
+.ct-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:start;}
+.ct-info p{font-family:'Space Mono',monospace;font-size:0.68rem;color:var(--muted);line-height:2.3;margin-bottom:34px;}
+.ct-channels{display:flex;flex-direction:column;gap:10px;}
+.ct-ch{display:flex;align-items:center;gap:16px;padding:15px 18px;background:var(--card);border:1px solid var(--border);text-decoration:none;transition:border-color 0.2s,background 0.2s;}
+.ct-ch:hover{border-color:var(--accent);background:rgba(0,255,200,0.03);}
+.ct-ico{width:36px;height:36px;background:rgba(0,255,200,0.05);border:1px solid rgba(0,255,200,0.12);display:flex;align-items:center;justify-content:center;font-size:0.95rem;flex-shrink:0;}
+.ct-lbl{font-family:'Space Mono',monospace;font-size:0.48rem;color:var(--muted);letter-spacing:0.2em;text-transform:uppercase;margin-bottom:3px;}
+.ct-val{font-size:0.88rem;font-weight:700;color:var(--text);}
+.cf-form{display:flex;flex-direction:column;gap:13px;}
+.cf-row{display:grid;grid-template-columns:1fr 1fr;gap:13px;}
+.cf-grp{display:flex;flex-direction:column;gap:6px;}
+.cf-lbl{font-family:'Space Mono',monospace;font-size:0.53rem;color:var(--muted);letter-spacing:0.22em;text-transform:uppercase;}
+.cf-in,.cf-ta,.cf-sel{background:var(--card);border:1px solid var(--border);color:var(--text);font-family:'Space Mono',monospace;font-size:0.68rem;padding:12px 14px;outline:none;transition:border-color 0.2s;resize:none;cursor:none;width:100%;}
+.cf-in:focus,.cf-ta:focus,.cf-sel:focus{border-color:var(--accent);}
+.cf-in::placeholder,.cf-ta::placeholder{color:var(--muted);}
+.cf-ta{height:105px;}
+.cf-sel{appearance:none;}
+.btn-send{font-family:'Space Mono',monospace;font-size:0.7rem;padding:15px;background:var(--accent);color:var(--bg);border:none;letter-spacing:0.15em;text-transform:uppercase;font-weight:700;cursor:none;width:100%;transition:opacity 0.2s;}
+.btn-send:hover{opacity:0.85;}
+
+/* ══════════════════════════════════════
+   FOOTER
+══════════════════════════════════════ */
+footer{position:relative;z-index:1;background:var(--bg);border-top:1px solid var(--border);padding:34px 80px;display:flex;justify-content:space-between;align-items:center;}
+.ft-logo{font-family:'Bebas Neue',sans-serif;font-size:1.5rem;color:var(--accent);letter-spacing:0.12em;text-shadow:0 0 22px rgba(0,255,200,0.28);}
+.ft-logo span{color:var(--muted);}
+.ft-copy{font-family:'Space Mono',monospace;font-size:0.52rem;color:var(--muted);letter-spacing:0.1em;}
+.ft-links{display:flex;gap:22px;}
+.ft-links a{font-family:'Space Mono',monospace;font-size:0.52rem;color:var(--muted);text-decoration:none;letter-spacing:0.15em;text-transform:uppercase;transition:color 0.2s;}
+.ft-links a:hover{color:var(--accent);}
+
+/* ══════════════════════════════════════
+   TOAST
+══════════════════════════════════════ */
+.toast{position:fixed;bottom:40px;right:80px;background:var(--card);border:1px solid var(--accent);padding:13px 20px;font-family:'Space Mono',monospace;font-size:0.63rem;color:var(--accent);z-index:9999;transform:translateY(100px);opacity:0;transition:all 0.4s cubic-bezier(0.16,1,0.3,1);letter-spacing:0.08em;max-width:320px;line-height:1.6;box-shadow:0 0 28px rgba(0,255,200,0.08);}
+.toast.show{transform:translateY(0);opacity:1;}
+
+/* ══════════════════════════════════════
+   ADMIN LOGIN
+══════════════════════════════════════ */
+.adm-login{position:fixed;inset:0;z-index:8500;background:rgba(0,0,0,0.97);display:none;flex-direction:column;align-items:center;justify-content:center;backdrop-filter:blur(16px);}
+.adm-login.show{display:flex;}
+.login-box{width:360px;border:1px solid var(--border2);background:var(--bg2);padding:46px;box-shadow:0 0 60px rgba(0,255,200,0.07);}
+.login-title{font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--accent);letter-spacing:0.1em;margin-bottom:6px;}
+.login-sub{font-family:'Space Mono',monospace;font-size:0.56rem;color:var(--muted);letter-spacing:0.12em;margin-bottom:30px;}
+.af-grp{display:flex;flex-direction:column;gap:6px;margin-bottom:14px;}
+.af-lbl{font-family:'Space Mono',monospace;font-size:0.53rem;color:var(--muted);letter-spacing:0.22em;text-transform:uppercase;}
+.af-in,.af-ta,.af-sel{background:var(--bg3);border:1px solid var(--border2);color:var(--text);font-family:'Space Mono',monospace;font-size:0.68rem;padding:11px 13px;outline:none;transition:border-color 0.2s;resize:none;width:100%;}
+.af-in:focus,.af-ta:focus,.af-sel:focus{border-color:var(--accent);}
+.af-in::placeholder,.af-ta::placeholder{color:var(--muted);}
+.af-ta{height:80px;}
+.af-sel{appearance:none;}
+.af-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.login-err{font-family:'Space Mono',monospace;font-size:0.56rem;color:var(--accent3);margin-top:8px;display:none;}
+.btn-asave{font-family:'Space Mono',monospace;font-size:0.62rem;padding:11px 24px;background:var(--accent);color:var(--bg);border:none;letter-spacing:0.15em;text-transform:uppercase;font-weight:700;cursor:pointer;transition:opacity 0.2s;}
+.btn-asave:hover{opacity:0.85;}
+.btn-adel{font-family:'Space Mono',monospace;font-size:0.58rem;padding:8px 15px;background:transparent;color:var(--accent3);border:1px solid var(--accent3);letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;transition:all 0.2s;}
+.btn-adel:hover{background:rgba(255,51,102,0.1);}
+.btn-aedit{font-family:'Space Mono',monospace;font-size:0.58rem;padding:8px 15px;background:transparent;color:var(--muted);border:1px solid var(--border2);letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;transition:all 0.2s;}
+.btn-aedit:hover{border-color:var(--accent);color:var(--accent);}
+
+/* ══════════════════════════════════════
+   ADMIN PANEL
+══════════════════════════════════════ */
+#adm-overlay{position:fixed;inset:0;z-index:7000;background:rgba(0,0,0,0.96);display:none;backdrop-filter:blur(12px);}
+#adm-overlay.show{display:flex;}
+.adm-panel{width:100%;max-width:1100px;margin:auto;background:var(--bg2);border:1px solid var(--border2);max-height:92vh;overflow-y:auto;box-shadow:0 0 100px rgba(0,255,200,0.07);}
+.adm-hdr{display:flex;align-items:center;justify-content:space-between;padding:22px 34px;border-bottom:1px solid var(--border2);position:sticky;top:0;background:var(--bg2);z-index:10;}
+.adm-title{font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--accent);letter-spacing:0.1em;}
+.adm-close{font-family:'Space Mono',monospace;font-size:0.58rem;color:var(--muted);border:1px solid var(--border2);padding:7px 15px;background:none;cursor:pointer;transition:all 0.2s;letter-spacing:0.15em;text-transform:uppercase;}
+.adm-close:hover{border-color:var(--accent3);color:var(--accent3);}
+.adm-tabs{display:flex;border-bottom:1px solid var(--border);padding:0 34px;}
+.adm-tab{font-family:'Space Mono',monospace;font-size:0.58rem;color:var(--muted);letter-spacing:0.2em;text-transform:uppercase;padding:14px 18px;border-bottom:2px solid transparent;cursor:pointer;transition:all 0.2s;background:none;border-top:none;border-left:none;border-right:none;}
+.adm-tab:hover{color:var(--accent);}
+.adm-tab.active{color:var(--accent);border-bottom-color:var(--accent);}
+.adm-body{padding:34px;}
+.adm-sec{display:none;}
+.adm-sec.active{display:block;}
+.adm-div{font-family:'Space Mono',monospace;font-size:0.52rem;color:var(--muted);letter-spacing:0.3em;text-transform:uppercase;padding:14px 0;border-top:1px solid var(--border);margin-top:6px;}
+.adm-list{display:flex;flex-direction:column;gap:9px;margin-bottom:24px;}
+.ali{display:flex;align-items:center;justify-content:space-between;background:var(--bg3);border:1px solid var(--border);padding:14px 18px;}
+.ali-nm{font-size:0.88rem;font-weight:700;margin-bottom:3px;}
+.ali-sb{font-family:'Space Mono',monospace;font-size:0.52rem;color:var(--muted);}
+.ali-act{display:flex;gap:7px;}
+.inq-tbl{width:100%;border-collapse:collapse;}
+.inq-tbl th{font-family:'Space Mono',monospace;font-size:0.48rem;color:var(--muted);letter-spacing:0.2em;text-transform:uppercase;padding:9px 12px;text-align:left;border-bottom:1px solid var(--border);}
+.inq-tbl td{font-family:'Space Mono',monospace;font-size:0.58rem;color:var(--text);padding:11px 12px;border-bottom:1px solid var(--border);}
+.iq-st{display:inline-block;padding:2px 9px;font-size:0.48rem;letter-spacing:0.1em;text-transform:uppercase;}
+.iq-st.new{background:rgba(0,255,200,0.09);color:var(--accent);}
+.iq-st.done{background:rgba(255,255,255,0.04);color:var(--muted);}
+
+/* ══════════════════════════════════════
+   MOBILE
+══════════════════════════════════════ */
+@media(max-width:900px){
+  nav{padding:14px 20px;}
+  nav ul{display:none;}
+  #hero{grid-template-columns:1fr;}
+  .hero-right{display:none;}
+  .hero-left{padding:120px 20px 60px;}
+  section{padding:80px 20px;}
+  #cocobot{padding:80px 20px;}
+  .cb-inner{grid-template-columns:1fr;gap:40px;}
+  .svc-grid,.proj-grid,.proc-steps,.pr-grid,.pkg-sel{grid-template-columns:1fr;}
+  .ct-grid,.cf-row,.bf-row,.af-row{grid-template-columns:1fr;}
+  footer{flex-direction:column;gap:14px;text-align:center;padding:28px 20px;}
+  .ps-arr{display:none;}
+  .hero-stats{gap:18px;flex-wrap:wrap;}
+  .adm-panel{max-height:100vh;}
+}
+</style>
+</head>
+<body>
+
+<div id="cur"></div>
+<div id="cur-ring"></div>
+<div class="scprog" id="scprog"></div>
+<div class="orb orb1"></div>
+<div class="orb orb2"></div>
+<div class="orb orb3"></div>
+
+<!-- ═══ LOADER ═══ -->
+<div id="loader">
+  <div class="ld-logo"><span class="cc">COCO</span><br><span class="bb">BUILDS</span></div>
+  <div class="ld-bar"><div class="ld-fill" id="ld-fill"></div></div>
+  <div class="ld-sub">Initializing systems...</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     CINEMATIC AD
+═══════════════════════════════════════════════════════ -->
+<div id="ad-overlay">
+  <div class="ad-scanlines"></div>
+  <div class="ad-vig"></div>
+  <div class="ad-lbars"></div>
+  <div class="ad-bbars"></div>
+  <div class="ad-flash" id="ad-flash"></div>
+  <div class="ad-prog"><div class="ad-pfill" id="ad-pfill"></div></div>
+  <button class="ad-skip" onclick="skipAd()">Skip ›</button>
+
+  <!-- S1: Ugly website -->
+  <div class="ad-scene" id="ads1">
+    <div style="position:relative;z-index:10;width:100%;display:flex;flex-direction:column;align-items:center;">
+      <div class="s1-browser" style="position:relative;">
+        <div class="s1-chrome">
+          <div class="s1-dot r"></div><div class="s1-dot y"></div><div class="s1-dot g"></div>
+          <div class="s1-url">www.mybusiness2008.com ⏳ Loading…</div>
+        </div>
+        <div class="s1-body">
+          <div class="s1-hdr"><div class="s1-hdr-txt">★★ WELCOME TO MY WEBSITE ★★</div></div>
+          <div class="s1-main">
+            <div class="s1-sidebar">Home<br>About Us<br>Products<br>Gallery<br>Contact</div>
+            <div class="s1-content">
+              Welcome!! We are the best company.<br>
+              Please visit us. We do many services.<br>
+              Call us for more info. Click here!!!<br>
+              © 2009 All Rights Reserved.
+            </div>
+          </div>
+          <div class="s1-ftr"><div class="s1-ftr-txt">Best viewed in Internet Explorer 6.0 · 800×600 resolution</div></div>
+        </div>
+        <div class="s1-spin"></div>
+      </div>
+      <div class="s1-caption" id="s1cap">Still using a website like <span class="hl">THIS?</span></div>
+    </div>
+  </div>
+
+  <!-- S2: Losing clients -->
+  <div class="ad-scene" id="ads2">
+    <div style="position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(255,51,102,0.06),transparent 60%);"></div>
+    <div class="s2-c">
+      <span class="s2-emo" id="s2emo">😤</span>
+      <div class="s2-big">YOU'RE<br>LOSING<br><span class="red">CLIENTS.</span></div>
+      <div class="s2-sub">every second your old site stays live</div>
+      <div class="s2-ctr" id="s2ctr">₹0 lost</div>
+    </div>
+  </div>
+
+  <!-- S3: Glitch -->
+  <div class="ad-scene" id="ads3" style="background:#000;">
+    <div style="position:relative;">
+      <div class="s3-word">CHANGE</div>
+      <div class="s3-shadow">CHANGE</div>
+    </div>
+  </div>
+
+  <!-- S4: Solution -->
+  <div class="ad-scene" id="ads4">
+    <div style="position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(0,255,200,0.06),transparent 60%);"></div>
+    <div class="s4-wrap">
+      <div class="s4-tag" id="s4t">— introducing coco builds —</div>
+      <div class="s4-title">
+        <span class="s4-ln s4-w" id="s4l1">I BUILD WEBSITES</span>
+        <span class="s4-ln s4-g" id="s4l2">THAT CONVERT</span>
+        <span class="s4-ln s4-w" id="s4l3">VISITORS INTO</span>
+        <span class="s4-ln s4-g" id="s4l4">CUSTOMERS.</span>
+      </div>
+      <div class="s4-sub" id="s4s">fast · modern · premium · yours forever</div>
+    </div>
+  </div>
+
+  <!-- S5: Features -->
+  <div class="ad-scene" id="ads5">
+    <div style="position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(162,89,255,0.05),transparent 60%);"></div>
+    <div class="s5-grid">
+      <div class="s5-f" id="sf0"><span class="s5-ico">⚡</span><div><div class="s5-nm">Lightning Fast</div><div class="s5-ds">Sub-second load times</div></div></div>
+      <div class="s5-f" id="sf1"><span class="s5-ico">📱</span><div><div class="s5-nm">Mobile First</div><div class="s5-ds">Perfect on every device</div></div></div>
+      <div class="s5-f" id="sf2"><span class="s5-ico">🎯</span><div><div class="s5-nm">High Converting</div><div class="s5-ds">Designed to get you clients</div></div></div>
+      <div class="s5-f" id="sf3"><span class="s5-ico">🎨</span><div><div class="s5-nm">Premium UI/UX</div><div class="s5-ds">Stands out, always</div></div></div>
+    </div>
+  </div>
+
+  <!-- S6: Social Proof -->
+  <div class="ad-scene" id="ads6">
+    <div class="s6-wrap">
+      <div class="s6-lbl">What clients say</div>
+      <div class="s6-msgs">
+        <div class="s6-msg" id="sm0">
+          <div class="s6-av">RK</div>
+          <div><div class="s6-st">★★★★★</div><div class="s6-nm">Rahul K. — Business Owner</div><div class="s6-tx">"Got 3x more clients after Ashwin rebuilt my site. Best investment I ever made."</div></div>
+        </div>
+        <div class="s6-msg" id="sm1">
+          <div class="s6-av">PM</div>
+          <div><div class="s6-st">★★★★★</div><div class="s6-nm">Priya M. — Startup Founder</div><div class="s6-tx">"Delivered in 5 days, exactly what I wanted. Super professional and very affordable!"</div></div>
+        </div>
+        <div class="s6-msg" id="sm2">
+          <div class="s6-av">AJ</div>
+          <div><div class="s6-st">★★★★★</div><div class="s6-nm">Arun J. — E-commerce Owner</div><div class="s6-tx">"My store went from 0 to ₹50k/month in sales within weeks of launch. Genuinely the real deal."</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S7: CTA -->
+  <div class="ad-scene" id="ads7">
+    <div style="position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(0,255,200,0.07),transparent 55%);"></div>
+    <div class="s7-wrap">
+      <div class="s7-stop" id="s7a">Stop losing money. Start growing.</div>
+      <div class="s7-logo" id="s7b">COCO<span class="dot">.</span>BUILDS</div>
+      <div class="s7-sub" id="s7c">Freelance Developer · Chennai, India · Reply within hours</div>
+      <div class="s7-div" id="s7d"></div>
+      <div class="s7-btns" id="s7e">
+        <button class="s7-bp" onclick="skipAd();document.getElementById('contact').scrollIntoView({behavior:'smooth'})">👉 Get Your Website Today</button>
+        <button class="s7-bg" onclick="skipAd()">Explore Portfolio</button>
+      </div>
+      <div class="s7-contact" id="s7f">shriashwin007@gmail.com · +91 89250 75335</div>
+      <div class="s7-killer" id="s7g"><em>"Your website isn't a design…</em><br>it's your salesman.<br><em>And yours is failing."</em></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ ADMIN LOGIN ═══ -->
+<div class="adm-login" id="adm-login">
+  <div class="login-box">
+    <div class="login-title">Admin Access</div>
+    <div class="login-sub">COCO BUILDS — Site Manager</div>
+    <div class="af-grp">
+      <label class="af-lbl">Password</label>
+      <input class="af-in" type="password" id="adm-pw" placeholder="Enter password" onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+    <div class="login-err" id="login-err">❌ Wrong password. Try again.</div>
+    <div style="display:flex;gap:10px;margin-top:14px;">
+      <button class="btn-asave" onclick="doLogin()">Login →</button>
+      <button class="btn-adel" onclick="document.getElementById('adm-login').classList.remove('show')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ ADMIN PANEL ═══ -->
+<div id="adm-overlay">
+  <div class="adm-panel">
+    <div class="adm-hdr">
+      <div class="adm-title">⚡ COCO BUILDS — Admin</div>
+      <button class="adm-close" onclick="closeAdmin()">✕ Close</button>
+    </div>
+    <div class="adm-tabs">
+      <button class="adm-tab active" onclick="admTab('projects')">Projects</button>
+      <button class="adm-tab" onclick="admTab('services')">Services</button>
+      <button class="adm-tab" onclick="admTab('pricing')">Pricing</button>
+      <button class="adm-tab" onclick="admTab('inquiries')">Inquiries</button>
+      <button class="adm-tab" onclick="admTab('settings')">Settings</button>
+    </div>
+    <div class="adm-body">
+
+      <!-- PROJECTS -->
+      <div class="adm-sec active" id="tab-projects">
+        <div class="adm-div">Current Projects</div>
+        <div class="adm-list" id="ap-list"></div>
+        <div class="adm-div">Add / Edit Project</div>
+        <input type="hidden" id="ep-id">
+        <div class="af-row">
+          <div class="af-grp"><label class="af-lbl">Project Name</label><input class="af-in" id="ap-name" placeholder="e.g. MCC School Website"></div>
+          <div class="af-grp"><label class="af-lbl">Category</label>
+            <select class="af-sel" id="ap-cat"><option>Website</option><option>Web App</option><option>E-commerce</option><option>Dashboard</option><option>IoT/Hardware</option><option>Other</option></select></div>
+        </div>
+        <div class="af-grp"><label class="af-lbl">Description</label><textarea class="af-ta" id="ap-desc" placeholder="What did you build? What problem does it solve?"></textarea></div>
+        <div class="af-row">
+          <div class="af-grp"><label class="af-lbl">Tech Stack</label><input class="af-in" id="ap-tech" placeholder="HTML, CSS, JS"></div>
+          <div class="af-grp"><label class="af-lbl">Live Link (optional)</label><input class="af-in" id="ap-link" placeholder="https://..."></div>
+        </div>
+        <div class="af-grp"><label class="af-lbl">GitHub Link</label><input class="af-in" id="ap-github" placeholder="https://github.com/shriashwin007-cmd/..."></div>
+        <div style="display:flex;gap:10px;margin-top:8px;">
+          <button class="btn-asave" onclick="saveProject()">Save Project</button>
+          <button class="btn-aedit" onclick="clearProjForm()">Clear</button>
+        </div>
+      </div>
+
+      <!-- SERVICES -->
+      <div class="adm-sec" id="tab-services">
+        <div class="adm-div">Current Services</div>
+        <div class="adm-list" id="as-list"></div>
+        <div class="adm-div">Add / Edit Service</div>
+        <input type="hidden" id="es-id">
+        <div class="af-row">
+          <div class="af-grp"><label class="af-lbl">Service Name</label><input class="af-in" id="as-name" placeholder="Website Development"></div>
+          <div class="af-grp"><label class="af-lbl">Icon (emoji)</label><input class="af-in" id="as-icon" placeholder="🌐"></div>
+        </div>
+        <div class="af-grp"><label class="af-lbl">Description</label><textarea class="af-ta" id="as-desc"></textarea></div>
+        <div class="af-grp"><label class="af-lbl">Price Text</label><input class="af-in" id="as-price" placeholder="Starting ₹999"></div>
+        <button class="btn-asave" onclick="saveSvc()" style="margin-top:8px;">Save Service</button>
+      </div>
+
+      <!-- PRICING -->
+      <div class="adm-sec" id="tab-pricing">
+        <div class="adm-div">Pricing Plans</div>
+        <div class="adm-list" id="apl-list"></div>
+        <div class="adm-div">Edit Plan</div>
+        <input type="hidden" id="epl-id">
+        <div class="af-row">
+          <div class="af-grp"><label class="af-lbl">Plan Name</label><input class="af-in" id="apl-name" placeholder="Basic"></div>
+          <div class="af-grp"><label class="af-lbl">Price (₹)</label><input class="af-in" id="apl-price" placeholder="999"></div>
+        </div>
+        <div class="af-grp"><label class="af-lbl">Subtitle</label><input class="af-in" id="apl-sub" placeholder="simple sites & pages"></div>
+        <div class="af-grp"><label class="af-lbl">Features (one per line)</label><textarea class="af-ta" id="apl-feats" style="height:120px;"></textarea></div>
+        <div class="af-row">
+          <div class="af-grp"><label class="af-lbl">Featured?</label><select class="af-sel" id="apl-feat"><option value="no">No</option><option value="yes">Yes (Most Popular)</option></select></div>
+          <div class="af-grp"><label class="af-lbl">Advance Amount (₹)</label><input class="af-in" id="apl-amt" placeholder="500"></div>
+        </div>
+        <button class="btn-asave" onclick="savePlan()" style="margin-top:8px;">Save Plan</button>
+      </div>
+
+      <!-- INQUIRIES -->
+      <div class="adm-sec" id="tab-inquiries">
+        <div class="adm-div">Client Inquiries & Payments</div>
+        <div style="overflow-x:auto;">
+          <table class="inq-tbl">
+            <thead><tr><th>Name</th><th>Contact</th><th>Type</th><th>Budget</th><th>Status</th><th>Date</th><th>Action</th></tr></thead>
+            <tbody id="inq-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- SETTINGS -->
+      <div class="adm-sec" id="tab-settings">
+        <div class="adm-div">Site Settings</div>
+        <div class="af-row">
+          <div class="af-grp"><label class="af-lbl">Your Name</label><input class="af-in" id="ss-name" placeholder="Ashwin"></div>
+          <div class="af-grp"><label class="af-lbl">Email</label><input class="af-in" id="ss-email" placeholder="shriashwin007@gmail.com"></div>
+        </div>
+        <div class="af-row">
+          <div class="af-grp"><label class="af-lbl">Phone / WhatsApp</label><input class="af-in" id="ss-phone" placeholder="+91 89250 75335"></div>
+          <div class="af-grp"><label class="af-lbl">GitHub Username</label><input class="af-in" id="ss-github" placeholder="shriashwin007-cmd"></div>
+        </div>
+        <div class="af-grp"><label class="af-lbl">Hero Description</label><textarea class="af-ta" id="ss-desc"></textarea></div>
+        <div class="af-row">
+          <div class="af-grp"><label class="af-lbl">Projects Done (stat)</label><input class="af-in" id="ss-s1" placeholder="20+"></div>
+          <div class="af-grp"><label class="af-lbl">Happy Clients (stat)</label><input class="af-in" id="ss-s2" placeholder="15+"></div>
+        </div>
+        <div class="af-grp"><label class="af-lbl">Razorpay Key ID (public only!)</label><input class="af-in" id="ss-rzp" placeholder="rzp_live_XXXXXXXXXX"></div>
+        <div class="af-grp"><label class="af-lbl">Formspree ID</label><input class="af-in" id="ss-fsp" placeholder="mgonkadb"></div>
+        <div class="af-grp"><label class="af-lbl">New Admin Password</label><input class="af-in" type="password" id="ss-pw" placeholder="Leave blank to keep current"></div>
+        <button class="btn-asave" onclick="saveSettings()" style="margin-top:8px;">Save All Settings</button>
+        <div style="margin-top:22px;padding-top:18px;border-top:1px solid var(--border);">
+          <button class="btn-adel" onclick="if(confirm('Reset ALL data to defaults?'))resetAll()">⚠ Reset All Data</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ═══ NAV ═══ -->
+<nav>
+  <a href="#" class="logo">COCO<span> BUILDS</span></a>
+  <ul>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#portfolio">Work</a></li>
+    <li><a href="#cocobot">COCO BOT</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+    <li><a href="#book">Book</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <a href="#contact" class="nav-cta">Hire Me</a>
+</nav>
+
+<!-- ═══ HERO ═══ -->
+<section id="hero">
+  <div class="hero-left">
+    <div class="hero-tag"><span class="sdot"></span>Available for new projects</div>
+    <h1>
+      <span class="l1">You Dream It.</span>
+      <span class="l2">I Build It.</span>
+      <span class="l3">You Own It.</span>
+    </h1>
+    <p class="hero-desc" id="hero-desc">Hey, I'm Ashwin — a freelance developer from Chennai who turns your ideas into real, working products. Websites, apps, dashboards, e-commerce — whatever you need built, I'll build it. Affordable. Fast. Custom. Zero hassle.</p>
+    <div class="hero-contact-row">
+      <a href="mailto:shriashwin007@gmail.com" class="hci"><div class="hc-icon">✉</div><span id="disp-email">shriashwin007@gmail.com</span></a>
+      <a href="tel:+918925075335" class="hci"><div class="hc-icon">📞</div><span id="disp-phone">+91 89250 75335</span></a>
+    </div>
+    <div class="hero-actions">
+      <a href="#contact" class="btn-p">Start a Project →</a>
+      <a href="#portfolio" class="btn-g">See My Work</a>
+    </div>
+    <div class="hero-stats">
+      <div><div class="stat-n" id="disp-s1">20+</div><div class="stat-l">Projects Done</div></div>
+      <div><div class="stat-n">100%</div><div class="stat-l">Custom Built</div></div>
+      <div><div class="stat-n" id="disp-s2">15+</div><div class="stat-l">Happy Clients</div></div>
+    </div>
+  </div>
+  <div class="hero-right">
+    <iframe src='https://my.spline.design/genkubgreetingrobot-O2RojUedDdpsPb9763CmLqxM/' frameborder='0' width='100%' height='100%' allow="autoplay"></iframe>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="mq">
+  <div class="mq-track">
+    <div class="mq-item"><span class="mqdot"></span>Websites</div>
+    <div class="mq-item"><span class="mqdot"></span>Web Apps</div>
+    <div class="mq-item"><span class="mqdot"></span>E-commerce</div>
+    <div class="mq-item"><span class="mqdot"></span>Dashboards</div>
+    <div class="mq-item"><span class="mqdot"></span>Admin Panels</div>
+    <div class="mq-item"><span class="mqdot"></span>APIs & Backends</div>
+    <div class="mq-item"><span class="mqdot"></span>Portfolio Sites</div>
+    <div class="mq-item"><span class="mqdot"></span>IoT Systems</div>
+    <div class="mq-item"><span class="mqdot"></span>AI Projects</div>
+    <div class="mq-item"><span class="mqdot"></span>Websites</div>
+    <div class="mq-item"><span class="mqdot"></span>Web Apps</div>
+    <div class="mq-item"><span class="mqdot"></span>E-commerce</div>
+    <div class="mq-item"><span class="mqdot"></span>Dashboards</div>
+    <div class="mq-item"><span class="mqdot"></span>Admin Panels</div>
+    <div class="mq-item"><span class="mqdot"></span>APIs & Backends</div>
+    <div class="mq-item"><span class="mqdot"></span>Portfolio Sites</div>
+    <div class="mq-item"><span class="mqdot"></span>IoT Systems</div>
+    <div class="mq-item"><span class="mqdot"></span>AI Projects</div>
+  </div>
+</div>
+
+<!-- ═══ SERVICES ═══ -->
+<section id="services">
+  <div class="stag">What I offer</div>
+  <h2 class="stitle">Services I <span>Provide</span></h2>
+  <div class="svc-grid" id="svc-grid"></div>
+</section>
+
+<!-- ═══ PORTFOLIO — REAL PROJECTS ═══ -->
+<section id="portfolio">
+  <div class="stag">Real work, real clients</div>
+  <h2 class="stitle">My <span>Projects</span></h2>
+  <div class="proj-grid" id="proj-grid"></div>
+  <div style="text-align:center;margin-top:36px;">
+    <a href="https://github.com/shriashwin007-cmd" target="_blank" class="btn-g" style="cursor:pointer;">View All on GitHub →</a>
+  </div>
+</section>
+
+<!-- ═══ COCO BOT PATENT ═══ -->
+<section id="cocobot">
+  <div class="cb-inner">
+    <div class="cb-left fade-up">
+      <div class="cb-badge"><span></span>Provisional Patent Filed</div>
+      <div class="cb-title">
+        <span style="display:block;color:var(--text);">COCO BOT</span>
+        <span style="display:block;" class="green">7.0</span>
+        <span style="display:block;" class="dim">Smart Crop Guardian</span>
+      </div>
+      <p class="cb-sub">My flagship invention — an AI + IoT agricultural system that autonomously detects plant diseases, monitors soil health, and applies treatment. Filed a Provisional Patent under my name as the inventor.</p>
+      <div class="cb-features">
+        <div class="cb-feat">AI Vision System using TensorFlow for real-time leaf disease detection</div>
+        <div class="cb-feat">Soil moisture, humidity & temperature sensor module</div>
+        <div class="cb-feat">Arduino controller with automated antifungal & nutrient pumps</div>
+        <div class="cb-feat">Solar-powered with 48hr lithium-ion backup — works anywhere</div>
+        <div class="cb-feat">Dual connectivity: LoRa (offline) + Wi-Fi — no internet needed</div>
+        <div class="cb-feat">Voice alerts in Tamil & English + cloud dashboard for farmers</div>
+      </div>
+      <a href="https://github.com/shriashwin007-cmd" target="_blank" class="cb-link">View GitHub →</a>
+    </div>
+    <div class="cb-right fade-up" style="transition-delay:0.15s;">
+      <div class="cb-card">
+        <div class="cb-card-title">COCO BOT 7.0</div>
+        <div class="cb-inventor">Inventor: Shri Ashwin · Chennai, India</div>
+        <ul class="cb-spec-list">
+          <li><span>🧠</span><span>AI-based crop disease detection & auto-treatment system</span></li>
+          <li><span>🌱</span><span>Combines soil, air & leaf monitoring in one device</span></li>
+          <li><span>📡</span><span>Online & offline hybrid connectivity (LoRa + Wi-Fi)</span></li>
+          <li><span>☀️</span><span>Solar-powered — built for rural Indian farmers</span></li>
+          <li><span>☁️</span><span>Cloud dashboard with predictive disease tracking</span></li>
+          <li><span>💊</span><span>Two micro-pumps: antifungal & nutrient delivery</span></li>
+          <li><span>🗣️</span><span>Tamil & English voice alerts + LCD status display</span></li>
+          <li><span>📐</span><span>Scalable: small farms to industrial agriculture</span></li>
+        </ul>
+        <div class="cb-patent-stamp">Patent Pending</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ PROCESS ═══ -->
+<section id="process">
+  <div class="stag">Simple process</div>
+  <h2 class="stitle">How It <span>Works</span></h2>
+  <div class="proc-steps">
+    <div class="ps fade-up">
+      <div class="ps-num">01</div>
+      <div class="ps-title">Tell Me Your Idea</div>
+      <div class="ps-desc">Reach out via form, email, or WhatsApp. No need to be technical — just describe it like you'd tell a friend.</div>
+      <div class="ps-arr">→</div>
+    </div>
+    <div class="ps fade-up" style="transition-delay:0.1s">
+      <div class="ps-num">02</div>
+      <div class="ps-title">Price & Timeline</div>
+      <div class="ps-desc">Fair, transparent quote. Clear deadline. No hidden fees. No surprises. Just honest work at honest prices.</div>
+      <div class="ps-arr">→</div>
+    </div>
+    <div class="ps fade-up" style="transition-delay:0.2s">
+      <div class="ps-num">03</div>
+      <div class="ps-title">I Build It</div>
+      <div class="ps-desc">I get to work and keep you updated. Want changes along the way? Just say so. I work until you're happy.</div>
+      <div class="ps-arr">→</div>
+    </div>
+    <div class="ps fade-up" style="transition-delay:0.3s">
+      <div class="ps-num">04</div>
+      <div class="ps-title">You Own It All</div>
+      <div class="ps-desc">Once done and paid, it's 100% yours. Full source code, all files. No lock-in. No subscriptions. Yours forever.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ PRICING ═══ -->
+<section id="pricing">
+  <div class="stag">Budget-friendly</div>
+  <h2 class="stitle">Affordable <span>Pricing</span></h2>
+  <div class="pr-note">💡 Every project is different. These are rough starting points — reach out and I'll give you a fair custom quote. No inflated rates. No agency markup. Just honest work.</div>
+  <div class="pr-grid" id="pr-grid"></div>
+</section>
+
+<!-- ═══ BOOK / RAZORPAY ═══ -->
+<section id="book">
+  <div class="stag">Lock in your project</div>
+  <h2 class="stitle">Book <span>Now</span></h2>
+  <div class="bk-wrap fade-up">
+    <p class="bk-intro">Ready to get started? Book your project with a small advance via Razorpay to lock in your slot. Fill in your details, pick a package, and pay securely — UPI, cards, netbanking all accepted. I'll reach out within hours to kick things off. 🚀</p>
+    <div class="pkg-sel" id="pkg-sel"></div>
+    <div class="bk-form">
+      <div class="bf-row">
+        <div class="bf-grp"><label class="bf-lbl">Your Name</label><input class="bf-in" id="b-name" placeholder="Your full name"></div>
+        <div class="bf-grp"><label class="bf-lbl">Email</label><input class="bf-in" id="b-email" type="email" placeholder="your@email.com"></div>
+      </div>
+      <div class="bf-grp"><label class="bf-lbl">Phone / WhatsApp</label><input class="bf-in" id="b-phone" placeholder="+91 XXXXXXXXXX"></div>
+      <div class="bf-grp"><label class="bf-lbl">Project Type</label>
+        <select class="bf-sel" id="b-type">
+          <option value="" disabled selected>Select...</option>
+          <option>Website / Landing Page</option><option>Web App</option>
+          <option>E-commerce Store</option><option>Dashboard / Admin Panel</option>
+          <option>API / Backend</option><option>Something Else</option>
+        </select>
+      </div>
+      <div class="bf-grp"><label class="bf-lbl">Describe Your Project</label><textarea class="bf-ta" id="b-desc" placeholder="Tell me what you want built..."></textarea></div>
+      <button class="btn-pay" onclick="initRazorpay()">🔒 Pay Advance & Book Project →</button>
+      <div class="pay-note">Advance reserves your slot · Balance due on delivery<br>Powered by Razorpay · 100% secure · UPI, Cards, Netbanking</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ CONTACT ═══ -->
+<section id="contact">
+  <div class="stag">Let's build together</div>
+  <h2 class="stitle">Hire <span>Me</span></h2>
+  <div class="ct-grid">
+    <div class="ct-info fade-up">
+      <p>Tell me what you want built.<br>I'll reply within a few hours with a quote and timeline.<br><br>No long waits. No corporate fluff.<br>Just real work, real fast.<br><br>Based in Chennai, India.<br>Available for clients worldwide.</p>
+      <div class="ct-channels">
+        <a href="mailto:shriashwin007@gmail.com" class="ct-ch"><div class="ct-ico">✉</div><div><div class="ct-lbl">Email</div><div class="ct-val">shriashwin007@gmail.com</div></div></a>
+        <a href="tel:+918925075335" class="ct-ch"><div class="ct-ico">📞</div><div><div class="ct-lbl">Phone / WhatsApp</div><div class="ct-val">+91 89250 75335</div></div></a>
+        <a href="https://github.com/shriashwin007-cmd" target="_blank" class="ct-ch"><div class="ct-ico">🐙</div><div><div class="ct-lbl">GitHub</div><div class="ct-val">shriashwin007-cmd</div></div></a>
+      </div>
+    </div>
+    <div class="cf-form fade-up" style="transition-delay:0.15s;">
+      <div class="cf-row">
+        <div class="cf-grp"><label class="cf-lbl">Your Name</label><input class="cf-in" id="cf-name" placeholder="John Doe"></div>
+        <div class="cf-grp"><label class="cf-lbl">Email / Phone</label><input class="cf-in" id="cf-contact" placeholder="email or WhatsApp"></div>
+      </div>
+      <div class="cf-grp"><label class="cf-lbl">What do you need?</label>
+        <select class="cf-sel" id="cf-type">
+          <option value="" disabled selected>Select project type...</option>
+          <option>Website / Landing Page</option><option>Web App</option>
+          <option>E-commerce Store</option><option>Dashboard / Admin Panel</option>
+          <option>API / Backend</option><option>Something Else</option>
+        </select>
+      </div>
+      <div class="cf-grp"><label class="cf-lbl">Describe your idea</label><textarea class="cf-ta" id="cf-msg" placeholder="Tell me what you want — no tech speak needed."></textarea></div>
+      <div class="cf-grp"><label class="cf-lbl">Budget range</label>
+        <select class="cf-sel" id="cf-budget">
+          <option value="" disabled selected>Rough budget...</option>
+          <option>Under ₹1,000</option><option>₹1,000 – ₹3,000</option>
+          <option>₹3,000 – ₹8,000</option><option>₹8,000 – ₹20,000</option>
+          <option>₹20,000+</option><option>Not sure yet</option>
+        </select>
+      </div>
+      <button class="btn-send" onclick="submitContact()">Send Project Request →</button>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FOOTER ═══ -->
+<footer>
+  <div class="ft-logo">COCO<span> BUILDS</span></div>
+  <div class="ft-copy">© 2026 Ashwin · Freelance Developer · Chennai, India</div>
+  <div class="ft-links">
+    <a href="mailto:shriashwin007@gmail.com">Email</a>
+    <a href="tel:+918925075335">Call</a>
+    <a href="#contact">Hire Me</a>
+    <a href="#" onclick="openAdminLogin();return false;">Admin</a>
+  </div>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+// ════════════════════════════════════
+// DATA STORE
+// ════════════════════════════════════
+const DB={
+  get(k){try{return JSON.parse(localStorage.getItem('coco_'+k));}catch{return null;}},
+  set(k,v){localStorage.setItem('coco_'+k,JSON.stringify(v));},
+  del(k){localStorage.removeItem('coco_'+k);}
+};
+
+// ── REAL PROJECTS FROM GITHUB ──
+const DEF_PROJECTS=[
+  {id:1,name:'Gift For Her',cat:'Website',
+   desc:'A beautiful, interactive surprise/gift website. Creative animations and personal touches — built to make someone feel special.',
+   tech:'HTML, CSS, JavaScript',link:'',
+   github:'https://github.com/shriashwin007-cmd/gift-for-her'},
+  {id:2,name:'Ethiraj College Website',cat:'Website',
+   desc:'Official website for Ethiraj College. Clean, institutional design with departments, news, and contact sections.',
+   tech:'HTML, CSS, JavaScript',link:'',
+   github:'https://github.com/shriashwin007-cmd/ethiraj-'},
+  {id:3,name:'MCC Web (v1)',cat:'Website',
+   desc:'First version of the MCC organisation website. Responsive layout with full info architecture and navigation.',
+   tech:'HTML, CSS, JavaScript',link:'',
+   github:'https://github.com/shriashwin007-cmd/MCC-web'},
+  {id:4,name:'MCC Web (v2)',cat:'Website',
+   desc:'Redesigned and upgraded version of the MCC website — improved UI, faster performance, and better mobile experience.',
+   tech:'HTML, CSS, JavaScript',link:'',
+   github:'https://github.com/shriashwin007-cmd/mcc-new-web'},
+  {id:5,name:'MCC School Website',cat:'Website',
+   desc:'Dedicated school website for MCC with student info, faculty listings, admissions section, and announcements.',
+   tech:'HTML, CSS, JavaScript',link:'',
+   github:'https://github.com/shriashwin007-cmd/mcc-school-web'},
+  {id:6,name:'RES-WELL',cat:'Web App',
+   desc:'A web application for wellness/health — real functionality built for real users. Custom backend with dynamic content.',
+   tech:'HTML, CSS, JavaScript',link:'',
+   github:'https://github.com/shriashwin007-cmd/RES-WELL'},
+  {id:7,name:'COCO BOT 7.0',cat:'IoT/Hardware',
+   desc:'My flagship invention — AI + IoT autonomous crop guardian. TensorFlow disease detection, soil monitoring, solar-powered. Provisional Patent filed.',
+   tech:'Python, TensorFlow, Arduino, LoRa, IoT',link:'',
+   github:'https://github.com/shriashwin007-cmd'},
+  {id:8,name:'COCO BUILDS Portfolio',cat:'Website',
+   desc:'This website you\'re looking at — my own freelance portfolio with cinematic ad, Spline robot, admin panel, and Razorpay integration.',
+   tech:'HTML, CSS, JavaScript',link:'',
+   github:'https://github.com/shriashwin007-cmd/ashwin-dev'},
+];
+
+const DEF_SERVICES=[
+  {id:1,icon:'🌐',name:'Website Development',desc:'Landing pages, business sites, portfolios, blogs. Clean design, fast loading, mobile-friendly. Built from scratch, always custom.',price:'Starting ₹999 → Let\'s talk'},
+  {id:2,icon:'⚙️',name:'Web Apps & Tools',desc:'Got an idea for a web application or tool? I\'ll turn it into a fully working product — yours to keep forever.',price:'Starting ₹2,999 → Let\'s talk'},
+  {id:3,icon:'🛒',name:'E-commerce & Stores',desc:'Want to sell online? I\'ll build your store with product pages, cart, and payments — everything to start making money.',price:'Starting ₹3,999 → Let\'s talk'},
+  {id:4,icon:'📊',name:'Dashboards & Panels',desc:'Need to manage data in one place? I build clean admin panels and dashboards that are easy to use and fully custom.',price:'Starting ₹2,499 → Let\'s talk'},
+  {id:5,icon:'🔗',name:'APIs & Backend',desc:'I handle server-side so your app works reliably. REST APIs, authentication, database — all covered.',price:'Starting ₹1,999 → Let\'s talk'},
+  {id:6,icon:'💡',name:'Got Something Else?',desc:'Don\'t see what you need? Tell me your idea — chances are I can build it.',price:'Any project welcome → Just reach out'},
+];
+
+const DEF_PLANS=[
+  {id:1,name:'Basic',price:'999',sub:'simple sites & pages',features:'Landing page or portfolio\nMobile responsive design\nContact form included\n3–5 day delivery\nFull source code',featured:'no',amount:500},
+  {id:2,name:'Standard',price:'2999',sub:'full websites & web apps',features:'Multi-page website or web app\nCustom design from scratch\nBasic backend / database\nLogin system if needed\n7–14 day delivery\nFull source code',featured:'yes',amount:1000},
+  {id:3,name:'Custom',price:'Let\'s Talk',sub:'complex apps & full systems',features:'E-commerce stores\nComplex web applications\nAPIs & integrations\nAdmin dashboards\nFlexible timeline\nOngoing support available',featured:'no',amount:2000},
+];
+
+const DEF_SETTINGS={
+  name:'Ashwin',email:'shriashwin007@gmail.com',phone:'+91 89250 75335',
+  github:'shriashwin007-cmd',
+  desc:'Hey, I\'m Ashwin — a freelance developer from Chennai who turns your ideas into real, working products. Websites, apps, dashboards, e-commerce — whatever you need built, I\'ll build it. Affordable. Fast. Custom. Zero hassle.',
+  s1:'20+',s2:'15+',
+  razorpay:'rzp_test_PLACEHOLDER',
+  adminpw:'coco2026',
+  formspree:'mgonkadb'
+};
+
+const gD=(k,d)=>{const v=DB.get(k);return v!==null?v:d;};
+const gProj=()=>gD('projects',DEF_PROJECTS);
+const gSvc=()=>gD('services',DEF_SERVICES);
+const gPlans=()=>gD('plans',DEF_PLANS);
+const gSet=()=>gD('settings',DEF_SETTINGS);
+const gInq=()=>gD('inquiries',[]);
+
+// ════════════════════════════════════
+// RENDER
+// ════════════════════════════════════
+const mockColors=['#00ffc8','#a259ff','#ff3366','#00aaff','#ffb800','#00ffc8','#a259ff','#00aaff'];
+function renderServices(){
+  const g=document.getElementById('svc-grid');if(!g)return;
+  g.innerHTML=gSvc().map((s,i)=>`
+    <div class="svc-card fade-up" style="transition-delay:${i*0.08}s">
+      <div class="svc-num">0${i+1}</div>
+      <span class="svc-ico">${s.icon}</span>
+      <div class="svc-name">${s.name}</div>
+      <div class="svc-desc">${s.desc}</div>
+      <div class="svc-price">${s.price}</div>
+    </div>`).join('');
+  obs();
+}
+function renderPortfolio(){
+  const g=document.getElementById('proj-grid');if(!g)return;
+  g.innerHTML=gProj().map((p,i)=>`
+    <div class="pj-card fade-up" style="transition-delay:${i*0.07}s">
+      <div class="pj-img">
+        <div class="mock">
+          <div class="mock-top"><div class="md r"></div><div class="md y"></div><div class="md g"></div></div>
+          <div class="mock-body" style="color:${mockColors[i%mockColors.length]}">
+            &gt; ${p.cat}<br>✓ ${p.tech.split(',')[0].trim()}<br>✓ ${p.tech.split(',')[1]?p.tech.split(',')[1].trim():'Custom Built'}<br><span style="color:#00aaff">→ ${p.link?'Live':'GitHub'}</span>
+          </div>
+        </div>
+      </div>
+      <div class="pj-info">
+        <div class="pj-tags">${p.tech.split(',').map(t=>`<span class="tag">${t.trim()}</span>`).join('')}</div>
+        <div class="pj-name">${p.name}</div>
+        <div class="pj-desc">${p.desc}</div>
+        <div class="pj-links">
+          ${p.link?`<a href="${p.link}" target="_blank" class="pj-link">Live →</a>`:''}
+          ${p.github?`<a href="${p.github}" target="_blank" class="pj-link">GitHub →</a>`:''}
+        </div>
+      </div>
+    </div>`).join('');
+  obs();
+}
+function renderPricing(){
+  const g=document.getElementById('pr-grid');if(!g)return;
+  g.innerHTML=gPlans().map((p,i)=>`
+    <div class="pr-card${p.featured==='yes'?' feat':''} fade-up" style="transition-delay:${i*0.1}s">
+      ${p.featured==='yes'?'<div class="pr-badge">Most Popular</div>':''}
+      <div class="pr-tier">${p.name}</div>
+      <div class="pr-amt">${isNaN(p.price)?'':`<span class="pr-cur">₹</span>`}${isNaN(p.price)?`<span style="font-size:2rem;line-height:1.2">${p.price}</span>`:p.price}${isNaN(p.price)?'':`<span style="font-size:0.85rem;color:var(--muted)">+</span>`}</div>
+      <div class="pr-sub">${p.sub}</div>
+      <ul class="pr-feats">${p.features.split('\n').filter(Boolean).map(f=>`<li class="y">${f}</li>`).join('')}</ul>
+      <button class="btn-hire" onclick="document.getElementById('book').scrollIntoView({behavior:'smooth'})">Get a Quote</button>
+    </div>`).join('');
+  obs();
+}
+function renderPkgs(){
+  const s=document.getElementById('pkg-sel');if(!s)return;
+  s.innerHTML=gPlans().map((p,i)=>`
+    <div class="pkg-opt${i===0?' active':''}" onclick="selPkg(${i})" id="pk${i}">
+      <div class="pkg-name">${p.name}</div>
+      <div class="pkg-price">₹${p.amount} advance</div>
+    </div>`).join('');
+}
+function selPkg(i){document.querySelectorAll('.pkg-opt').forEach((e,j)=>e.classList.toggle('active',i===j));}
+function applySettings(){
+  const s=gSet();
+  const se=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v||'';};
+  se('hero-desc',s.desc);se('disp-email',s.email);se('disp-phone',s.phone);
+  se('disp-s1',s.s1);se('disp-s2',s.s2);
+}
+function renderAll(){applySettings();renderServices();renderPortfolio();renderPricing();renderPkgs();}
+
+// ════════════════════════════════════
+// RAZORPAY
+// ════════════════════════════════════
+function initRazorpay(){
+  const name=document.getElementById('b-name').value.trim();
+  const email=document.getElementById('b-email').value.trim();
+  const phone=document.getElementById('b-phone').value.trim();
+  const desc=document.getElementById('b-desc').value.trim();
+  if(!name||!email||!phone){showToast('Please fill in name, email, and phone.');return;}
+  const plans=gPlans();
+  const ai=[...document.querySelectorAll('.pkg-opt')].findIndex(e=>e.classList.contains('active'));
+  const plan=plans[ai>=0?ai:0];
+  const s=gSet();
+  const rzk=s.razorpay||'rzp_test_PLACEHOLDER';
+  if(rzk.includes('PLACEHOLDER')){showToast('⚠ Razorpay not configured yet. Add your key in Admin → Settings.');return;}
+  const opts={
+    key:rzk,amount:(plan.amount||500)*100,currency:'INR',
+    name:'Coco Builds',description:`${plan.name} Plan — Advance`,
+    prefill:{name,email,contact:phone},
+    notes:{desc,plan:plan.name},theme:{color:'#00ffc8'},
+    handler(r){
+      const inq={id:Date.now(),name,email,contact:phone,
+        project_type:document.getElementById('b-type').value||'Not specified',
+        message:desc,budget:`${plan.name} plan`,status:'paid',
+        date:new Date().toLocaleDateString(),payment_id:r.razorpay_payment_id};
+      const inqs=gInq();inqs.unshift(inq);DB.set('inquiries',inqs);
+      showToast('🎉 Payment successful! I\'ll reach out within a few hours.');
+      ['b-name','b-email','b-phone','b-desc'].forEach(id=>document.getElementById(id).value='');
+    },
+    modal:{ondismiss:()=>showToast('Payment cancelled. Feel free to try again!')}
+  };
+  try{new Razorpay(opts).open();}
+  catch(e){showToast('Razorpay error — check your key in Admin → Settings.');}
+}
+
+// ════════════════════════════════════
+// CONTACT FORM
+// ════════════════════════════════════
+async function submitContact(){
+  const name=document.getElementById('cf-name').value.trim();
+  const contact=document.getElementById('cf-contact').value.trim();
+  const type=document.getElementById('cf-type').value;
+  const msg=document.getElementById('cf-msg').value.trim();
+  const budget=document.getElementById('cf-budget').value;
+  if(!name||!contact||!msg){showToast('Please fill in name, contact, and describe your project.');return;}
+  const inq={id:Date.now(),name,email:contact,contact,project_type:type||'Not specified',message:msg,budget:budget||'Not specified',status:'new',date:new Date().toLocaleDateString()};
+  const inqs=gInq();inqs.unshift(inq);DB.set('inquiries',inqs);
+  const btn=document.querySelector('.btn-send');btn.textContent='Sending...';btn.style.opacity='0.7';
+  try{
+    const s=gSet();
+    const res=await fetch(`https://formspree.io/f/${s.formspree||'mgonkadb'}`,{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify({name,contact,project_type:type,message:msg,budget})});
+    showToast(res.ok?'✅ Message sent! I\'ll reply within a few hours.':'Saved locally. Also try: shriashwin007@gmail.com');
+    if(res.ok){['cf-name','cf-contact','cf-msg'].forEach(id=>document.getElementById(id).value='');document.getElementById('cf-type').selectedIndex=0;document.getElementById('cf-budget').selectedIndex=0;}
+  }catch{showToast('Saved! Also email: shriashwin007@gmail.com');}
+  btn.textContent='Send Project Request →';btn.style.opacity='1';
+}
+
+// ════════════════════════════════════
+// ADMIN
+// ════════════════════════════════════
+function openAdminLogin(){document.getElementById('adm-login').classList.add('show');}
+function doLogin(){
+  const pw=document.getElementById('adm-pw').value;
+  const s=gSet();
+  if(pw===(s.adminpw||DEF_SETTINGS.adminpw)){
+    document.getElementById('adm-login').classList.remove('show');
+    document.getElementById('adm-overlay').classList.add('show');
+    loadAdminData();
+  }else{document.getElementById('login-err').style.display='block';}
+}
+function closeAdmin(){document.getElementById('adm-overlay').classList.remove('show');}
+function admTab(t){
+  document.querySelectorAll('.adm-tab').forEach(el=>el.classList.toggle('active',el.textContent.toLowerCase().trim()===t));
+  document.querySelectorAll('.adm-sec').forEach(el=>el.classList.remove('active'));
+  const sec=document.getElementById('tab-'+t);if(sec)sec.classList.add('active');
+  loadAdminData();
+}
+function loadAdminData(){rAP();rAS();rAPL();rAInq();lSF();}
+
+function rAP(){
+  const el=document.getElementById('ap-list');if(!el)return;
+  el.innerHTML=gProj().map(p=>`<div class="ali"><div><div class="ali-nm">${p.name}</div><div class="ali-sb">${p.cat} · ${p.tech.split(',').slice(0,2).join(', ')}</div></div><div class="ali-act"><button class="btn-aedit" onclick="epj(${p.id})">Edit</button><button class="btn-adel" onclick="dpj(${p.id})">Del</button></div></div>`).join('')||'<div style="font-family:Space Mono,monospace;font-size:0.58rem;color:var(--muted);">No projects yet.</div>';
+}
+function epj(id){const p=gProj().find(x=>x.id===id);if(!p)return;document.getElementById('ep-id').value=id;document.getElementById('ap-name').value=p.name;document.getElementById('ap-cat').value=p.cat;document.getElementById('ap-desc').value=p.desc;document.getElementById('ap-tech').value=p.tech;document.getElementById('ap-link').value=p.link||'';document.getElementById('ap-github').value=p.github||'';document.getElementById('ap-name').scrollIntoView({behavior:'smooth',block:'center'});}
+function saveProject(){
+  const id=document.getElementById('ep-id').value;
+  const p={id:id?parseInt(id):Date.now(),name:document.getElementById('ap-name').value.trim(),cat:document.getElementById('ap-cat').value,desc:document.getElementById('ap-desc').value.trim(),tech:document.getElementById('ap-tech').value.trim(),link:document.getElementById('ap-link').value.trim(),github:document.getElementById('ap-github').value.trim()};
+  if(!p.name){showToast('Name required.');return;}
+  let ps=gProj();ps=id?ps.map(x=>x.id===p.id?p:x):[...ps,p];
+  DB.set('projects',ps);clearProjForm();rAP();renderPortfolio();showToast('✅ Project saved!');
+}
+function dpj(id){if(!confirm('Delete?'))return;DB.set('projects',gProj().filter(p=>p.id!==id));rAP();renderPortfolio();}
+function clearProjForm(){['ep-id','ap-name','ap-desc','ap-tech','ap-link','ap-github'].forEach(i=>{const el=document.getElementById(i);if(el)el.value='';});document.getElementById('ap-cat').selectedIndex=0;}
+
+function rAS(){
+  const el=document.getElementById('as-list');if(!el)return;
+  el.innerHTML=gSvc().map(s=>`<div class="ali"><div><div class="ali-nm">${s.icon} ${s.name}</div><div class="ali-sb">${s.price}</div></div><div class="ali-act"><button class="btn-aedit" onclick="esv(${s.id})">Edit</button><button class="btn-adel" onclick="dsv(${s.id})">Del</button></div></div>`).join('');
+}
+function esv(id){const s=gSvc().find(x=>x.id===id);if(!s)return;document.getElementById('es-id').value=id;document.getElementById('as-name').value=s.name;document.getElementById('as-icon').value=s.icon;document.getElementById('as-desc').value=s.desc;document.getElementById('as-price').value=s.price;}
+function saveSvc(){
+  const id=document.getElementById('es-id').value;
+  const s={id:id?parseInt(id):Date.now(),name:document.getElementById('as-name').value.trim(),icon:document.getElementById('as-icon').value.trim()||'🔧',desc:document.getElementById('as-desc').value.trim(),price:document.getElementById('as-price').value.trim()};
+  if(!s.name)return;let sv=gSvc();sv=id?sv.map(x=>x.id===s.id?s:x):[...sv,s];DB.set('services',sv);
+  ['es-id','as-name','as-icon','as-desc','as-price'].forEach(i=>{const el=document.getElementById(i);if(el)el.value='';});
+  rAS();renderServices();showToast('✅ Service saved!');
+}
+function dsv(id){if(!confirm('Delete?'))return;DB.set('services',gSvc().filter(s=>s.id!==id));rAS();renderServices();}
+
+function rAPL(){
+  const el=document.getElementById('apl-list');if(!el)return;
+  el.innerHTML=gPlans().map(p=>`<div class="ali"><div><div class="ali-nm">${p.name} ${p.featured==='yes'?'⭐':''}</div><div class="ali-sb">₹${p.price} · ₹${p.amount} advance</div></div><div class="ali-act"><button class="btn-aedit" onclick="epl(${p.id})">Edit</button><button class="btn-adel" onclick="dpl(${p.id})">Del</button></div></div>`).join('');
+}
+function epl(id){const p=gPlans().find(x=>x.id===id);if(!p)return;document.getElementById('epl-id').value=id;document.getElementById('apl-name').value=p.name;document.getElementById('apl-price').value=p.price;document.getElementById('apl-sub').value=p.sub;document.getElementById('apl-feats').value=p.features;document.getElementById('apl-feat').value=p.featured;document.getElementById('apl-amt').value=p.amount;}
+function savePlan(){
+  const id=document.getElementById('epl-id').value;
+  const p={id:id?parseInt(id):Date.now(),name:document.getElementById('apl-name').value.trim(),price:document.getElementById('apl-price').value.trim(),sub:document.getElementById('apl-sub').value.trim(),features:document.getElementById('apl-feats').value.trim(),featured:document.getElementById('apl-feat').value,amount:parseInt(document.getElementById('apl-amt').value)||500};
+  if(!p.name)return;let pl=gPlans();pl=id?pl.map(x=>x.id===p.id?p:x):[...pl,p];DB.set('plans',pl);
+  ['epl-id','apl-name','apl-price','apl-sub','apl-feats','apl-amt'].forEach(i=>{const el=document.getElementById(i);if(el)el.value='';});
+  rAPL();renderPricing();renderPkgs();showToast('✅ Plan saved!');
+}
+function dpl(id){if(!confirm('Delete?'))return;DB.set('plans',gPlans().filter(p=>p.id!==id));rAPL();renderPricing();renderPkgs();}
+
+function rAInq(){
+  const tb=document.getElementById('inq-tbody');if(!tb)return;
+  const inqs=gInq();
+  tb.innerHTML=inqs.length?inqs.map(q=>`<tr><td>${q.name}</td><td>${q.email||q.contact}</td><td>${q.project_type}</td><td>${q.budget}</td><td><span class="iq-st ${q.status==='paid'||q.status==='new'?'new':'done'}">${q.status}</span></td><td>${q.date}</td><td><button class="btn-aedit" onclick="mkDone(${q.id})" style="font-size:0.48rem;padding:5px 9px;">Done</button><button class="btn-adel" onclick="dInq(${q.id})" style="font-size:0.48rem;padding:5px 9px;">Del</button></td></tr>`).join(''):'<tr><td colspan="7" style="text-align:center;padding:22px;font-family:Space Mono,monospace;font-size:0.58rem;color:var(--muted);">No inquiries yet</td></tr>';
+}
+function mkDone(id){let i=gInq();i=i.map(q=>q.id===id?{...q,status:'done'}:q);DB.set('inquiries',i);rAInq();}
+function dInq(id){DB.set('inquiries',gInq().filter(q=>q.id!==id));rAInq();}
+
+function lSF(){
+  const s=gSet();
+  const f=(id,v)=>{const el=document.getElementById(id);if(el)el.value=v||'';};
+  f('ss-name',s.name);f('ss-email',s.email);f('ss-phone',s.phone);f('ss-github',s.github);
+  f('ss-desc',s.desc);f('ss-s1',s.s1);f('ss-s2',s.s2);f('ss-rzp',s.razorpay);f('ss-fsp',s.formspree);
+}
+function saveSettings(){
+  const g=id=>{const el=document.getElementById(id);return el?el.value.trim():'';};
+  const cur=gSet();const np=g('ss-pw');
+  const s={name:g('ss-name')||cur.name,email:g('ss-email')||cur.email,phone:g('ss-phone')||cur.phone,github:g('ss-github')||cur.github,desc:g('ss-desc')||cur.desc,s1:g('ss-s1')||cur.s1,s2:g('ss-s2')||cur.s2,razorpay:g('ss-rzp')||cur.razorpay,adminpw:np||cur.adminpw,formspree:g('ss-fsp')||cur.formspree};
+  DB.set('settings',s);applySettings();showToast('✅ Settings saved!');
+}
+function resetAll(){['projects','services','plans','inquiries','settings'].forEach(k=>DB.del(k));location.reload();}
+
+// ════════════════════════════════════
+// CINEMATIC AD
+// ════════════════════════════════════
+const AD=[
+  {id:'ads1',dur:3800},{id:'ads2',dur:3200},{id:'ads3',dur:1600},
+  {id:'ads4',dur:3600},{id:'ads5',dur:3600},{id:'ads6',dur:4600},{id:'ads7',dur:5200}
+];
+const ADTOT=AD.reduce((a,s)=>a+s.dur,0);
+let adIdx=-1,adTmr=null,adPTmr=null,adEl=0;
+
+function adFlash(){const f=document.getElementById('ad-flash');f.style.opacity='0.75';setTimeout(()=>f.style.opacity='0',110);}
+function vis(id){const el=document.getElementById(id);if(el)el.classList.add('vis');}
+function adShow(i){
+  document.querySelectorAll('.ad-scene').forEach(s=>s.classList.remove('on'));
+  document.querySelectorAll('.vis').forEach(s=>s.classList.remove('vis'));
+  if(i>=AD.length){adEnd();return;}
+  adIdx=i;
+  const sc=AD[i];
+  document.getElementById(sc.id).classList.add('on');
+
+  if(sc.id==='ads1'){setTimeout(()=>{const c=document.getElementById('s1cap');if(c)c.style.opacity='1';},1400);}
+  if(sc.id==='ads2'){
+    let l=0;const ct=document.getElementById('s2ctr');
+    const iv=setInterval(()=>{l+=Math.floor(Math.random()*600+200);if(ct)ct.textContent='₹'+l.toLocaleString()+' lost';},280);
+    setTimeout(()=>clearInterval(iv),3000);
+    const emos=['😤','😭','😡','🤦','💸','😤'];let ei=0;
+    const em=setInterval(()=>{const e=document.getElementById('s2emo');if(e)e.textContent=emos[ei++%emos.length];},500);
+    setTimeout(()=>clearInterval(em),3000);
+  }
+  if(sc.id==='ads4'){
+    setTimeout(()=>vis('s4t'),100);setTimeout(()=>vis('s4l1'),220);
+    setTimeout(()=>vis('s4l2'),370);setTimeout(()=>vis('s4l3'),520);
+    setTimeout(()=>vis('s4l4'),670);setTimeout(()=>vis('s4s'),920);
+  }
+  if(sc.id==='ads5'){['sf0','sf1','sf2','sf3'].forEach((id,j)=>setTimeout(()=>vis(id),(j+1)*420+100));}
+  if(sc.id==='ads6'){setTimeout(()=>vis('sm0'),200);setTimeout(()=>vis('sm1'),750);setTimeout(()=>vis('sm2'),1300);}
+  if(sc.id==='ads7'){
+    setTimeout(()=>vis('s7a'),100);setTimeout(()=>vis('s7b'),260);
+    setTimeout(()=>vis('s7c'),460);setTimeout(()=>{const d=document.getElementById('s7d');if(d)d.classList.add('vis');},620);
+    setTimeout(()=>vis('s7e'),920);setTimeout(()=>vis('s7f'),1120);setTimeout(()=>vis('s7g'),1440);
+  }
+  adTmr=setTimeout(()=>{if(i<AD.length-1)adFlash();adShow(i+1);},sc.dur);
+}
+function adEnd(){document.getElementById('ad-overlay').classList.add('done');}
+function skipAd(){clearTimeout(adTmr);clearInterval(adPTmr);adEnd();}
+function startAd(){
+  adEl=0;const fill=document.getElementById('ad-pfill');
+  adPTmr=setInterval(()=>{adEl+=80;const p=Math.min((adEl/ADTOT)*100,100);if(fill)fill.style.width=p+'%';if(adEl>=ADTOT)clearInterval(adPTmr);},80);
+  setTimeout(()=>adShow(0),500);
+}
+
+// ════════════════════════════════════
+// LOADER
+// ════════════════════════════════════
+function startLoader(){
+  const fill=document.getElementById('ld-fill');let p=0;
+  const iv=setInterval(()=>{
+    p+=Math.random()*20+6;if(p>=100){p=100;clearInterval(iv);}
+    fill.style.width=p+'%';
+    if(p>=100)setTimeout(()=>{document.getElementById('loader').classList.add('hide');startAd();},280);
+  },100);
+}
+
+// ════════════════════════════════════
+// CURSOR
+// ════════════════════════════════════
+let mx=0,my=0,rx=0,ry=0;
+const cur=document.getElementById('cur'),ring=document.getElementById('cur-ring');
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx-5+'px';cur.style.top=my-5+'px';});
+(function ar(){rx+=(mx-rx)*0.1;ry+=(my-ry)*0.1;ring.style.left=rx-19+'px';ring.style.top=ry-19+'px';requestAnimationFrame(ar);})();
+
+// ════════════════════════════════════
+// SCROLL
+// ════════════════════════════════════
+window.addEventListener('scroll',()=>{
+  const prog=document.getElementById('scprog');
+  if(prog)prog.style.width=(window.scrollY/(document.body.scrollHeight-window.innerHeight)*100)+'%';
+});
+
+// ════════════════════════════════════
+// FADE-UP OBSERVER
+// ════════════════════════════════════
+function obs(){
+  const io=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');}),{threshold:0.07});
+  document.querySelectorAll('.fade-up:not(.visible)').forEach(el=>io.observe(el));
+}
+
+// ════════════════════════════════════
+// TOAST
+// ════════════════════════════════════
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),4000);}
+
+// ════════════════════════════════════
+// KEYBOARD SHORTCUT — Ctrl+Shift+A
+// ════════════════════════════════════
+document.addEventListener('keydown',e=>{if(e.ctrlKey&&e.shiftKey&&e.key==='A'){e.preventDefault();openAdminLogin();}});
+
+// ════════════════════════════════════
+// BOOT
+// ════════════════════════════════════
+window.addEventListener('DOMContentLoaded',()=>{renderAll();obs();startLoader();});
+</script>
+</body>
+</html>
