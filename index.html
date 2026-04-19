@@ -686,6 +686,75 @@ footer{position:relative;z-index:1;background:var(--bg);border-top:1px solid var
 input[type=range]{-webkit-appearance:none;height:2px;background:var(--border2);outline:none;border-radius:1px;}
 input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:var(--accent);cursor:pointer;}
 .adm-tabs::-webkit-scrollbar{display:none;}
+
+/* ══ ADMIN NEW ELEMENTS ══ */
+.adm-sec{display:none!important;}
+.adm-sec.active-sec{display:block!important;}
+/* Range input styling */
+input[type=range]{
+  -webkit-appearance:none;appearance:none;
+  height:2px;background:var(--border2,#1c1c38);
+  outline:none;border-radius:1px;cursor:pointer;
+}
+input[type=range]::-webkit-slider-thumb{
+  -webkit-appearance:none;width:14px;height:14px;
+  border-radius:50%;background:var(--accent,#00ffc8);cursor:pointer;
+  box-shadow:0 0 6px rgba(0,255,200,0.4);
+}
+/* Font chips */
+.font-chip-btn{
+  font-size:0.5rem;padding:8px 14px;
+  border:1px solid var(--border2,#1c1c38);
+  cursor:pointer;letter-spacing:0.1em;
+  transition:all 0.2s;color:var(--muted,#52527a);
+  background:none;
+}
+.font-chip-btn:hover,.font-chip-btn.picked{
+  border-color:var(--accent,#00ffc8);
+  color:var(--accent,#00ffc8);
+  background:rgba(0,255,200,0.05);
+}
+/* Color swatch */
+.cswatch{
+  display:flex;align-items:center;gap:10px;
+  padding:12px;
+  background:var(--bg,#020205);
+  border:1px solid var(--border,#14142a);
+}
+.cswatch-box{
+  width:40px;height:40px;
+  border:1px solid var(--border2,#1c1c38);
+  cursor:pointer;position:relative;overflow:hidden;
+  flex-shrink:0;transition:transform 0.2s;
+}
+.cswatch-box:hover{transform:scale(1.08);}
+.cswatch-box input[type=color]{
+  position:absolute;inset:-4px;
+  opacity:0;cursor:pointer;
+  width:140%;height:140%;
+}
+.cswatch-label{font-family:monospace;font-size:0.56rem;color:var(--text,#eaeaf8);display:block;margin-bottom:2px;}
+.cswatch-val{font-family:monospace;font-size:0.48rem;color:var(--muted,#52527a);}
+/* Image upload zone */
+.img-upload-zone{
+  border:1px dashed var(--border2,#1c1c38);
+  cursor:pointer;transition:border-color 0.2s,background 0.2s;
+  min-height:70px;display:flex;align-items:center;justify-content:center;
+  position:relative;overflow:hidden;
+}
+.img-upload-zone:hover{border-color:var(--accent,#00ffc8);background:rgba(0,255,200,0.02);}
+/* Sample images */
+.sample-img{
+  width:100%;aspect-ratio:16/9;object-fit:cover;
+  cursor:pointer;border:1px solid var(--border,#14142a);
+  transition:border-color 0.2s,transform 0.2s;
+  display:block;
+}
+.sample-img:hover{border-color:var(--accent,#00ffc8);transform:scale(1.02);}
+.sample-img-wrap{position:relative;}
+.sample-img-label{font-family:monospace;font-size:0.42rem;color:var(--muted,#52527a);margin-top:4px;text-align:center;}
+/* Fix adm-tab active */
+.adm-tab.active{color:var(--accent,#00ffc8)!important;border-bottom-color:var(--accent,#00ffc8)!important;}
 </style>
 </head>
 <body>
@@ -850,20 +919,21 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
       <div class="adm-title">⚡ COCO BUILDS — Admin</div>
       <button class="adm-close" onclick="closeAdmin()">✕ Close</button>
     </div>
-    <div class="adm-tabs" style="overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;">
-      <button class="adm-tab active" onclick="admTabSwitch(this,'tab-projects')">📁 Projects</button>
-      <button class="adm-tab" onclick="admTabSwitch(this,'tab-services')">⚙️ Services</button>
-      <button class="adm-tab" onclick="admTabSwitch(this,'tab-pricing')">💰 Pricing</button>
-      <button class="adm-tab" onclick="admTabSwitch(this,'tab-theme')">🎨 Colors</button>
-      <button class="adm-tab" onclick="admTabSwitch(this,'tab-fonts')">Aa Fonts</button>
-      <button class="adm-tab" onclick="admTabSwitch(this,'tab-text')">📝 Text</button>
-      <button class="adm-tab" onclick="admTabSwitch(this,'tab-inquiries')">📬 Inquiries</button>
-      <button class="adm-tab" onclick="admTabSwitch(this,'tab-settings')">⚙ Settings</button>
+    <div class="adm-tabs" style="overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;display:flex;">
+      <button class="adm-tab active" onclick="goTab(this,'tab-projects')">📁 Projects</button>
+      <button class="adm-tab" onclick="goTab(this,'tab-services')">⚙️ Services</button>
+      <button class="adm-tab" onclick="goTab(this,'tab-pricing')">💰 Pricing</button>
+      <button class="adm-tab" onclick="goTab(this,'tab-theme')">🎨 Colors</button>
+      <button class="adm-tab" onclick="goTab(this,'tab-fonts')">Aa Fonts</button>
+      <button class="adm-tab" onclick="goTab(this,'tab-text')">📝 Text</button>
+      <button class="adm-tab" onclick="goTab(this,'tab-layout')">📐 Layout</button>
+      <button class="adm-tab" onclick="goTab(this,'tab-inquiries')">📬 Inquiries</button>
+      <button class="adm-tab" onclick="goTab(this,'tab-settings')">⚙ Settings</button>
     </div>
     <div class="adm-body">
 
       <!-- PROJECTS -->
-      <div class="adm-sec active" id="tab-projects">
+      <div class="adm-sec active-sec" id="tab-projects" style="">
         <div class="adm-div">Current Projects</div>
         <div class="adm-list" id="ap-list"></div>
         <div class="adm-div">Add / Edit Project</div>
@@ -955,6 +1025,193 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
         </div>
       </div>
 
+
+      <!-- ════ THEME / COLORS TAB ════ -->
+      <div class="adm-sec" id="tab-theme" style="display:none;">
+        <div class="adm-div">🎨 Live Color Editor — Changes apply instantly</div>
+        <div id="cp-container" style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:24px;"></div>
+
+        <div class="adm-div">🌟 Glow & Intensity</div>
+        <div class="af-grp" style="margin-bottom:14px;">
+          <label class="af-lbl">Accent Glow Strength</label>
+          <div style="display:flex;align-items:center;gap:12px;margin-top:6px;">
+            <input type="range" id="sl-glow" min="0" max="100" value="40" style="flex:1;" oninput="liveGlow(this.value)">
+            <span id="sl-glow-v" style="font-family:monospace;font-size:0.55rem;color:var(--accent,#00ffc8);width:34px;">40%</span>
+          </div>
+        </div>
+        <div class="af-grp" style="margin-bottom:14px;">
+          <label class="af-lbl">Background Darkness</label>
+          <div style="display:flex;align-items:center;gap:12px;margin-top:6px;">
+            <input type="range" id="sl-dark" min="0" max="100" value="98" style="flex:1;" oninput="liveDark(this.value)">
+            <span id="sl-dark-v" style="font-family:monospace;font-size:0.55rem;color:var(--accent,#00ffc8);width:34px;">98%</span>
+          </div>
+        </div>
+
+        <div class="adm-div">💉 Custom CSS Injection</div>
+        <div class="af-grp">
+          <label class="af-lbl">Raw CSS (injected live into page)</label>
+          <textarea id="css-ta" class="af-ta" style="height:140px;font-family:monospace;font-size:0.52rem;" placeholder="/* example */
+.logo { letter-spacing: 0.2em; }
+.hero-l { padding-top: 80px; }"></textarea>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:10px;">
+          <button class="btn-asave" onclick="saveThemeAll()">💾 Save Theme</button>
+          <button class="btn-aedit" onclick="previewCSS()">👁 Preview CSS</button>
+          <button class="btn-adel" onclick="resetThemeAll()">↺ Reset Colors</button>
+        </div>
+      </div>
+
+      <!-- ════ FONTS TAB ════ -->
+      <div class="adm-sec" id="tab-fonts" style="display:none;">
+        <div class="adm-div">Aa Heading Font — Used for big titles</div>
+        <div id="fnt-head" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;"></div>
+
+        <div class="adm-div">Aa Body Font — Used for descriptions</div>
+        <div id="fnt-body" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;"></div>
+
+        <div class="adm-div">Aa Mono Font — Used for labels & code</div>
+        <div id="fnt-mono" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;"></div>
+
+        <div class="adm-div">📏 Font Sizes</div>
+        <div class="af-grp" style="margin-bottom:14px;">
+          <label class="af-lbl">Hero Heading Size</label>
+          <div style="display:flex;align-items:center;gap:12px;margin-top:6px;">
+            <input type="range" id="sl-h1" min="32" max="96" value="60" style="flex:1;" oninput="liveH1(this.value)">
+            <span id="sl-h1-v" style="font-family:monospace;font-size:0.55rem;color:var(--accent,#00ffc8);width:40px;">60px</span>
+          </div>
+        </div>
+        <div class="af-grp" style="margin-bottom:14px;">
+          <label class="af-lbl">Body Text Size</label>
+          <div style="display:flex;align-items:center;gap:12px;margin-top:6px;">
+            <input type="range" id="sl-body" min="10" max="20" value="14" style="flex:1;" oninput="liveBd(this.value)">
+            <span id="sl-body-v" style="font-family:monospace;font-size:0.55rem;color:var(--accent,#00ffc8);width:40px;">14px</span>
+          </div>
+        </div>
+        <div class="af-grp" style="margin-bottom:14px;">
+          <label class="af-lbl">Letter Spacing (headings)</label>
+          <div style="display:flex;align-items:center;gap:12px;margin-top:6px;">
+            <input type="range" id="sl-ls" min="0" max="20" value="3" style="flex:1;" oninput="liveLS(this.value)">
+            <span id="sl-ls-v" style="font-family:monospace;font-size:0.55rem;color:var(--accent,#00ffc8);width:40px;">0.03em</span>
+          </div>
+        </div>
+        <button class="btn-asave" onclick="saveFontsAll()" style="margin-top:8px;">💾 Save Fonts</button>
+      </div>
+
+      <!-- ════ TEXT CONTENT TAB ════ -->
+      <div class="adm-sec" id="tab-text" style="display:none;">
+        <div class="adm-div">🦸 Hero Section</div>
+        <div class="af-row">
+          <div class="af-grp"><label class="af-lbl">Line 1 (white)</label><input class="af-in" id="tx-l1" placeholder="You Dream It." oninput="liveText('#h1l1',this.value)"></div>
+          <div class="af-grp"><label class="af-lbl">Line 2 (gradient)</label><input class="af-in" id="tx-l2" placeholder="I Build It." oninput="liveText('#h1l2',this.value)"></div>
+        </div>
+        <div class="af-row">
+          <div class="af-grp"><label class="af-lbl">Line 3 (dim)</label><input class="af-in" id="tx-l3" placeholder="You Own It." oninput="liveText('#h1l3',this.value)"></div>
+          <div class="af-grp"><label class="af-lbl">Status Tag</label><input class="af-in" id="tx-tag" placeholder="Available for new projects" oninput="liveText('#tx-tag-disp',this.value)"></div>
+        </div>
+        <div class="af-grp"><label class="af-lbl">Hero Description</label><textarea class="af-ta" id="tx-desc" placeholder="Hey, I'm Ashwin..." oninput="liveText('#hero-desc-disp',this.value)"></textarea></div>
+
+        <div class="adm-div">📊 Stats</div>
+        <div class="af-row">
+          <div class="af-grp"><label class="af-lbl">Stat 1 Number</label><input class="af-in" id="tx-s1n" placeholder="20+" oninput="liveText('#disp-s1n',this.value)"></div>
+          <div class="af-grp"><label class="af-lbl">Stat 1 Label</label><input class="af-in" id="tx-s1l" placeholder="Projects Done" oninput="liveStatLabel(0,this.value)"></div>
+        </div>
+        <div class="af-row">
+          <div class="af-grp"><label class="af-lbl">Stat 2 Number</label><input class="af-in" id="tx-s2n" placeholder="100%" oninput="liveText('#disp-s2n',this.value)"></div>
+          <div class="af-grp"><label class="af-lbl">Stat 2 Label</label><input class="af-in" id="tx-s2l" placeholder="Custom Built" oninput="liveStatLabel(1,this.value)"></div>
+        </div>
+        <div class="af-row">
+          <div class="af-grp"><label class="af-lbl">Stat 3 Number</label><input class="af-in" id="tx-s3n" placeholder="15+" oninput="liveText('#disp-s3n',this.value)"></div>
+          <div class="af-grp"><label class="af-lbl">Stat 3 Label</label><input class="af-in" id="tx-s3l" placeholder="Happy Clients" oninput="liveStatLabel(2,this.value)"></div>
+        </div>
+
+        <div class="adm-div">🔧 Nav & Footer</div>
+        <div class="af-row">
+          <div class="af-grp"><label class="af-lbl">Logo Text</label><input class="af-in" id="tx-logo" placeholder="COCO BUILDS" oninput="liveLogo(this.value)"></div>
+          <div class="af-grp"><label class="af-lbl">Footer Copyright</label><input class="af-in" id="tx-copy" placeholder="© 2026 Ashwin..." oninput="liveText('.ft-cp',this.value)"></div>
+        </div>
+
+        <div class="adm-div">🤖 COCO BOT Description</div>
+        <div class="af-grp"><textarea class="af-ta" id="tx-cbsub" style="height:90px;" placeholder="My flagship invention..." oninput="liveText('#cbsub-disp',this.value)"></textarea></div>
+
+        <button class="btn-asave" onclick="saveTxtAll()" style="margin-top:8px;">💾 Save All Text</button>
+      </div>
+
+      <!-- ════ LAYOUT / IMAGES TAB ════ -->
+      <div class="adm-sec" id="tab-layout" style="display:none;">
+        <div class="adm-div">🖼 Section Background Images</div>
+        <p style="font-family:monospace;font-size:0.56rem;color:var(--muted,#52527a);margin-bottom:18px;line-height:1.8;">Upload images to use as section backgrounds. Drag the slider to adjust overlay opacity.</p>
+
+        <div style="display:flex;flex-direction:column;gap:20px;">
+          <div style="background:var(--bg,#020205);border:1px solid var(--border,#14142a);padding:16px;">
+            <div style="font-family:monospace;font-size:0.55rem;color:var(--accent,#00ffc8);letter-spacing:0.2em;text-transform:uppercase;margin-bottom:10px;">Hero Section BG</div>
+            <div class="img-upload-zone" id="bg-hero-zone" onclick="triggerImgUpload('bg-hero-file','bg-hero-zone','hero')">
+              <div style="font-family:monospace;font-size:0.52rem;color:var(--muted,#52527a);text-align:center;padding:20px;">📁 Click or drag image here<br><span style="color:var(--accent,#00ffc8);">Recommended: 1920×1080</span></div>
+              <input type="file" id="bg-hero-file" accept="image/*" style="display:none" onchange="applyBgImage(this,'hero')">
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;margin-top:10px;">
+              <span style="font-family:monospace;font-size:0.5rem;color:var(--muted,#52527a);">Overlay</span>
+              <input type="range" min="0" max="100" value="60" style="flex:1;" oninput="setBgOverlay('hero',this.value)">
+              <button onclick="clearBg('hero')" style="font-family:monospace;font-size:0.46rem;padding:4px 10px;background:none;border:1px solid var(--border,#14142a);color:var(--muted,#52527a);cursor:pointer;">Clear</button>
+            </div>
+          </div>
+
+          <div style="background:var(--bg,#020205);border:1px solid var(--border,#14142a);padding:16px;">
+            <div style="font-family:monospace;font-size:0.55rem;color:var(--accent,#00ffc8);letter-spacing:0.2em;text-transform:uppercase;margin-bottom:10px;">Services Section BG</div>
+            <div class="img-upload-zone" onclick="triggerImgUpload('bg-svc-file','bg-svc-zone','services')">
+              <div style="font-family:monospace;font-size:0.52rem;color:var(--muted,#52527a);text-align:center;padding:20px;">📁 Click or drag image here</div>
+              <input type="file" id="bg-svc-file" accept="image/*" style="display:none" onchange="applyBgImage(this,'services')">
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;margin-top:10px;">
+              <span style="font-family:monospace;font-size:0.5rem;color:var(--muted,#52527a);">Overlay</span>
+              <input type="range" min="0" max="100" value="60" style="flex:1;" oninput="setBgOverlay('services',this.value)">
+              <button onclick="clearBg('services')" style="font-family:monospace;font-size:0.46rem;padding:4px 10px;background:none;border:1px solid var(--border,#14142a);color:var(--muted,#52527a);cursor:pointer;">Clear</button>
+            </div>
+          </div>
+
+          <div style="background:var(--bg,#020205);border:1px solid var(--border,#14142a);padding:16px;">
+            <div style="font-family:monospace;font-size:0.55rem;color:var(--accent,#00ffc8);letter-spacing:0.2em;text-transform:uppercase;margin-bottom:10px;">Portfolio Section BG</div>
+            <div class="img-upload-zone" onclick="triggerImgUpload('bg-port-file','bg-port-zone','portfolio')">
+              <div style="font-family:monospace;font-size:0.52rem;color:var(--muted,#52527a);text-align:center;padding:20px;">📁 Click or drag image here</div>
+              <input type="file" id="bg-port-file" accept="image/*" style="display:none" onchange="applyBgImage(this,'portfolio')">
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;margin-top:10px;">
+              <span style="font-family:monospace;font-size:0.5rem;color:var(--muted,#52527a);">Overlay</span>
+              <input type="range" min="0" max="100" value="60" style="flex:1;" oninput="setBgOverlay('portfolio',this.value)">
+              <button onclick="clearBg('portfolio')" style="font-family:monospace;font-size:0.46rem;padding:4px 10px;background:none;border:1px solid var(--border,#14142a);color:var(--muted,#52527a);cursor:pointer;">Clear</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="adm-div" style="margin-top:24px;">📸 Sample / Placeholder Images</div>
+        <p style="font-family:monospace;font-size:0.52rem;color:var(--muted,#52527a);margin-bottom:14px;line-height:1.8;">Click any image to copy its URL and use it in a project card.</p>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;" id="sample-imgs"></div>
+
+        <div class="adm-div" style="margin-top:24px;">📐 Layout Spacing</div>
+        <div class="af-grp" style="margin-bottom:14px;">
+          <label class="af-lbl">Section Padding (top/bottom)</label>
+          <div style="display:flex;align-items:center;gap:12px;margin-top:6px;">
+            <input type="range" id="sl-pad" min="40" max="160" value="100" style="flex:1;" oninput="livePad(this.value)">
+            <span id="sl-pad-v" style="font-family:monospace;font-size:0.55rem;color:var(--accent,#00ffc8);width:40px;">100px</span>
+          </div>
+        </div>
+        <div class="af-grp" style="margin-bottom:14px;">
+          <label class="af-lbl">Section Horizontal Padding</label>
+          <div style="display:flex;align-items:center;gap:12px;margin-top:6px;">
+            <input type="range" id="sl-hpad" min="10" max="120" value="60" style="flex:1;" oninput="liveHPad(this.value)">
+            <span id="sl-hpad-v" style="font-family:monospace;font-size:0.55rem;color:var(--accent,#00ffc8);width:40px;">60px</span>
+          </div>
+        </div>
+        <div class="af-grp" style="margin-bottom:14px;">
+          <label class="af-lbl">Border Radius (cards)</label>
+          <div style="display:flex;align-items:center;gap:12px;margin-top:6px;">
+            <input type="range" id="sl-br" min="0" max="24" value="0" style="flex:1;" oninput="liveBR(this.value)">
+            <span id="sl-br-v" style="font-family:monospace;font-size:0.55rem;color:var(--accent,#00ffc8);width:40px;">0px</span>
+          </div>
+        </div>
+        <button class="btn-asave" onclick="saveLayout()" style="margin-top:8px;">💾 Save Layout</button>
+      </div>
+
+
     </div>
   </div>
 </div>
@@ -1004,9 +1261,9 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
   </div>
   <div class="hero-right" id="hero-right">
     <iframe id="robot-iframe"
-      src='https://my.spline.design/genkubgreetingrobot-O2RojUedDdpsPb9763CmLqxM/'
+      src='https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode'
       frameborder='0' width='100%' height='100%'
-      allow="autoplay; gyroscope; accelerometer"></iframe>
+      allow="autoplay; gyroscope; accelerometer; fullscreen"></iframe>
     <!-- Cover Spline watermark -->
     <div style="position:absolute;bottom:0;right:0;width:200px;height:52px;background:var(--bg2);z-index:10;pointer-events:none;"></div>
     <!-- Also cover top-right Spline logo -->
@@ -1221,7 +1478,448 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
 
 <div class="toast" id="toast"></div>
 
-<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script src="https://checkout.razorpay.com/v1/checkout.js">
+// ═══════════════════════════════════════════════════
+// UNIFIED TAB SWITCHER — fixes blank panel bug
+// ═══════════════════════════════════════════════════
+function goTab(btn, secId) {
+  document.querySelectorAll('.adm-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.adm-sec').forEach(s => s.classList.remove('active-sec'));
+  const sec = document.getElementById(secId);
+  if (sec) sec.classList.add('active-sec');
+
+  // Load data for each tab
+  if (secId === 'tab-projects')   { renderAdmProj(); renderAdmInq(); }
+  if (secId === 'tab-services')   renderAdmSvc();
+  if (secId === 'tab-pricing')    renderAdmPlans();
+  if (secId === 'tab-theme')      loadColorPickers();
+  if (secId === 'tab-fonts')      loadFontPickers();
+  if (secId === 'tab-text')       loadTextFields();
+  if (secId === 'tab-layout')     loadLayoutTab();
+  if (secId === 'tab-inquiries')  renderAdmInq();
+  if (secId === 'tab-settings')   loadAdmSettings();
+}
+
+// Also fix old admTab function to use goTab
+function admTab(btn, secId) { goTab(btn, secId); }
+
+// Make first tab work on open
+function openAdmPanel() {
+  document.getElementById('adm').classList.add('on');
+  // Activate first tab
+  const firstTab = document.querySelector('.adm-tab');
+  const firstSec = document.getElementById('tab-projects');
+  document.querySelectorAll('.adm-sec').forEach(s => s.classList.remove('active-sec'));
+  if (firstSec) firstSec.classList.add('active-sec');
+  loadAdmData();
+}
+
+// ═══════════════════════════════════════════════════
+// COLOR PICKERS — live editing
+// ═══════════════════════════════════════════════════
+const COLOR_DEFS = [
+  { key: '--accent',  label: 'Accent Color (main)',    def: '#00ffc8' },
+  { key: '--accent2', label: 'Accent 2 (purple)',      def: '#a259ff' },
+  { key: '--bg',      label: 'Main Background',        def: '#020205' },
+  { key: '--bg2',     label: 'Section Background',     def: '#07070e' },
+  { key: '--card',    label: 'Card Background',        def: '#08081a' },
+  { key: '--border',  label: 'Border Color',           def: '#14142a' },
+  { key: '--text',    label: 'Text Color',             def: '#eaeaf8' },
+  { key: '--muted',   label: 'Muted Text',             def: '#52527a' },
+];
+
+function getCVar(k) { return getComputedStyle(document.documentElement).getPropertyValue(k).trim() || COLOR_DEFS.find(c=>c.key===k)?.def || '#ffffff'; }
+function setCVar(k, v) { document.documentElement.style.setProperty(k, v); }
+
+function loadColorPickers() {
+  const cp = document.getElementById('cp-container');
+  if (!cp) return;
+  const saved = S.get('clrs') || {};
+  // Apply saved first
+  COLOR_DEFS.forEach(c => { if (saved[c.key]) setCVar(c.key, saved[c.key]); });
+
+  cp.innerHTML = COLOR_DEFS.map(c => {
+    const cur = saved[c.key] || getCVar(c.key) || c.def;
+    return `<div class="cswatch">
+      <div class="cswatch-box" style="background:${cur}">
+        <input type="color" value="${cur}" oninput="onColorIn('${c.key}',this.value,this.parentElement)">
+      </div>
+      <div>
+        <span class="cswatch-label">${c.label}</span>
+        <span class="cswatch-val" id="cv-${c.key.replace('--','')}">${cur}</span>
+      </div>
+    </div>`;
+  }).join('');
+
+  // Load sliders
+  const gs = S.get('glowslider') || 40;
+  const slg = document.getElementById('sl-glow');
+  if (slg) { slg.value = gs; document.getElementById('sl-glow-v').textContent = gs + '%'; }
+
+  // Load custom CSS
+  const savedCSS = S.get('customcss') || '';
+  const ta = document.getElementById('css-ta');
+  if (ta) ta.value = savedCSS;
+  applyCustomCSS(savedCSS);
+}
+
+function onColorIn(cssVar, val, swatchEl) {
+  setCVar(cssVar, val);
+  swatchEl.style.background = val;
+  const lbl = document.getElementById('cv-' + cssVar.replace('--', ''));
+  if (lbl) lbl.textContent = val;
+  // Auto-save
+  const saved = S.get('clrs') || {};
+  saved[cssVar] = val;
+  S.set('clrs', saved);
+}
+
+function liveGlow(v) {
+  document.getElementById('sl-glow-v').textContent = v + '%';
+  S.set('glowslider', parseInt(v));
+  const acc = getCVar('--accent') || '#00ffc8';
+  document.documentElement.style.setProperty('--glow-opacity', v / 100);
+}
+function liveDark(v) {
+  document.getElementById('sl-dark-v').textContent = v + '%';
+  const lum = Math.round(255 - (v / 100) * 250);
+  const hex = lum.toString(16).padStart(2,'0');
+  const newBg = `#${hex}${hex}${hex}`;
+  setCVar('--bg', newBg);
+}
+
+function previewCSS() {
+  const ta = document.getElementById('css-ta');
+  if (ta) applyCustomCSS(ta.value);
+  showToast('👁 CSS previewed');
+}
+
+function applyCustomCSS(css) {
+  let el = document.getElementById('__cstm');
+  if (!el) { el = document.createElement('style'); el.id = '__cstm'; document.head.appendChild(el); }
+  el.textContent = css || '';
+}
+
+function saveThemeAll() {
+  const ta = document.getElementById('css-ta');
+  if (ta) { S.set('customcss', ta.value); applyCustomCSS(ta.value); }
+  const gs = document.getElementById('sl-glow');
+  if (gs) S.set('glowslider', parseInt(gs.value));
+  showToast('✅ Theme saved!');
+}
+
+function resetThemeAll() {
+  if (!confirm('Reset all colors to defaults?')) return;
+  S.del('clrs');
+  COLOR_DEFS.forEach(c => document.documentElement.style.removeProperty(c.key));
+  applyCustomCSS('');
+  loadColorPickers();
+  showToast('Colors reset to default');
+}
+
+function applySavedColors() {
+  const saved = S.get('clrs') || {};
+  Object.entries(saved).forEach(([k,v]) => setCVar(k, v));
+  const css = S.get('customcss') || '';
+  applyCustomCSS(css);
+}
+
+// ═══════════════════════════════════════════════════
+// FONT PICKERS
+// ═══════════════════════════════════════════════════
+const FONT_SETS = {
+  head: { el: 'fnt-head', cssVar: '--font-head', opts: ['Bebas Neue','Oswald','Syne','Playfair Display','Impact','Georgia'] },
+  body: { el: 'fnt-body', cssVar: '--font-body', opts: ['Syne','Space Mono','Georgia','Arial','Verdana','Tahoma'] },
+  mono: { el: 'fnt-mono', cssVar: '--font-mono', opts: ['Space Mono','Courier New','Consolas','monospace'] },
+};
+
+function loadFontPickers() {
+  const saved = S.get('fonts2') || {};
+  Object.entries(FONT_SETS).forEach(([type, cfg]) => {
+    const el = document.getElementById(cfg.el);
+    if (!el) return;
+    const cur = saved[type] || (type==='head' ? 'Bebas Neue' : type==='body' ? 'Syne' : 'Space Mono');
+    el.innerHTML = cfg.opts.map(fn => `
+      <button class="font-chip-btn${fn===cur?' picked':''}" style="font-family:'${fn}',sans-serif"
+        onclick="pickFont2('${type}','${fn}',this)">${fn}</button>`).join('');
+  });
+  const fs = saved.sizes || {};
+  const h1sl = document.getElementById('sl-h1'); if(h1sl){h1sl.value=fs.h1||60;document.getElementById('sl-h1-v').textContent=(fs.h1||60)+'px';}
+  const bdsl = document.getElementById('sl-body'); if(bdsl){bdsl.value=fs.body||14;document.getElementById('sl-body-v').textContent=(fs.body||14)+'px';}
+  const lssl = document.getElementById('sl-ls'); if(lssl){lssl.value=fs.ls||3;document.getElementById('sl-ls-v').textContent='0.0'+fs.ls+'em';}
+}
+
+function pickFont2(type, fn, el) {
+  const cfg = FONT_SETS[type];
+  const saved = S.get('fonts2') || {};
+  saved[type] = fn;
+  S.set('fonts2', saved);
+  document.querySelectorAll(`#${cfg.el} .font-chip-btn`).forEach(b=>b.classList.remove('picked'));
+  el.classList.add('picked');
+  document.documentElement.style.setProperty(cfg.cssVar, `'${fn}',sans-serif`);
+}
+
+function liveH1(v) { document.getElementById('sl-h1-v').textContent=v+'px'; document.querySelectorAll('h1').forEach(e=>e.style.fontSize=v+'px'); }
+function liveBd(v) { document.getElementById('sl-body-v').textContent=v+'px'; document.body.style.fontSize=v+'px'; }
+function liveLS(v) {
+  document.getElementById('sl-ls-v').textContent='0.0'+v+'em';
+  document.querySelectorAll('h1,.logo,.stitle,.stn').forEach(e=>e.style.letterSpacing='0.0'+v+'em');
+}
+
+function saveFontsAll() {
+  const saved = S.get('fonts2') || {};
+  const h1v=document.getElementById('sl-h1'); const bdv=document.getElementById('sl-body'); const lsv=document.getElementById('sl-ls');
+  saved.sizes = { h1: parseInt(h1v?.value||60), body: parseInt(bdv?.value||14), ls: parseInt(lsv?.value||3) };
+  S.set('fonts2', saved);
+  showToast('✅ Fonts saved!');
+}
+
+function applySavedFonts2() {
+  const saved = S.get('fonts2') || {};
+  if (saved.head) document.documentElement.style.setProperty('--font-head', `'${saved.head}',sans-serif`);
+  if (saved.body) document.documentElement.style.setProperty('--font-body', `'${saved.body}',sans-serif`);
+  if (saved.mono) document.documentElement.style.setProperty('--font-mono', `'${saved.mono}',monospace`);
+  if (saved.sizes?.h1) document.querySelectorAll('h1').forEach(e=>e.style.fontSize=saved.sizes.h1+'px');
+  if (saved.sizes?.body) document.body.style.fontSize=saved.sizes.body+'px';
+}
+
+// ═══════════════════════════════════════════════════
+// TEXT LIVE EDITING
+// ═══════════════════════════════════════════════════
+function liveText(sel, val) {
+  document.querySelectorAll(sel).forEach(e => e.textContent = val);
+}
+function liveStatLabel(idx, val) {
+  const labels = document.querySelectorAll('.stl');
+  if (labels[idx]) labels[idx].textContent = val;
+}
+function liveLogo(val) {
+  const logoEls = document.querySelectorAll('.logo');
+  logoEls.forEach(el => {
+    const span = el.querySelector('span');
+    if (span) {
+      const parts = val.split(' ');
+      el.childNodes[0].textContent = parts[0] || 'COCO';
+      span.textContent = ' ' + (parts.slice(1).join(' ') || 'BUILDS');
+    }
+  });
+}
+
+const TX_SAVED_MAP = {
+  'tx-l1': '#h1l1', 'tx-l2': '#h1l2', 'tx-l3': '#h1l3',
+  'tx-tag': '#tx-tag-disp', 'tx-desc': '#hero-desc-disp',
+  'tx-s1n': '#disp-s1n', 'tx-s2n': '#disp-s2n', 'tx-s3n': '#disp-s3n',
+  'tx-copy': '.ft-cp', 'tx-cbsub': '#cbsub-disp',
+};
+
+function loadTextFields() {
+  const saved = S.get('txdata') || {};
+  Object.entries(TX_SAVED_MAP).forEach(([inputId, sel]) => {
+    const inp = document.getElementById(inputId);
+    if (!inp) return;
+    if (saved[inputId]) { inp.value = saved[inputId]; }
+    else {
+      const el = document.querySelector(sel);
+      if (el) inp.value = el.textContent || '';
+    }
+  });
+  // Stat labels
+  const labels = document.querySelectorAll('.stl');
+  const sl1 = document.getElementById('tx-s1l'); if(sl1&&labels[0]) sl1.value=labels[0].textContent;
+  const sl2 = document.getElementById('tx-s2l'); if(sl2&&labels[1]) sl2.value=labels[1].textContent;
+  const sl3 = document.getElementById('tx-s3l'); if(sl3&&labels[2]) sl3.value=labels[2].textContent;
+  // Logo
+  const lg = document.getElementById('tx-logo');
+  if(lg) { const l=document.querySelector('.logo'); if(l) lg.value=l.textContent.trim(); }
+}
+
+function saveTxtAll() {
+  const saved = {};
+  Object.keys(TX_SAVED_MAP).forEach(id => {
+    const inp = document.getElementById(id);
+    if (inp) saved[id] = inp.value;
+  });
+  // Save stat labels
+  ['tx-s1l','tx-s2l','tx-s3l'].forEach(id => { const inp=document.getElementById(id); if(inp) saved[id]=inp.value; });
+  S.set('txdata', saved);
+  // Apply all live
+  Object.entries(TX_SAVED_MAP).forEach(([id, sel]) => {
+    const inp = document.getElementById(id);
+    if (inp && inp.value) liveText(sel, inp.value);
+  });
+  const labels = document.querySelectorAll('.stl');
+  const sl1=document.getElementById('tx-s1l'); if(sl1&&labels[0]) labels[0].textContent=sl1.value;
+  const sl2=document.getElementById('tx-s2l'); if(sl2&&labels[1]) labels[1].textContent=sl2.value;
+  const sl3=document.getElementById('tx-s3l'); if(sl3&&labels[2]) labels[2].textContent=sl3.value;
+  const lg=document.getElementById('tx-logo'); if(lg) liveLogo(lg.value);
+  showToast('✅ Text saved & applied live!');
+}
+
+function applySavedText2() {
+  const saved = S.get('txdata') || {};
+  Object.entries(TX_SAVED_MAP).forEach(([id, sel]) => {
+    if (saved[id]) liveText(sel, saved[id]);
+  });
+  const labels = document.querySelectorAll('.stl');
+  if(saved['tx-s1l']&&labels[0]) labels[0].textContent=saved['tx-s1l'];
+  if(saved['tx-s2l']&&labels[1]) labels[1].textContent=saved['tx-s2l'];
+  if(saved['tx-s3l']&&labels[2]) labels[2].textContent=saved['tx-s3l'];
+}
+
+// ═══════════════════════════════════════════════════
+// LAYOUT / IMAGES TAB
+// ═══════════════════════════════════════════════════
+const BG_SECTIONS = { hero: '#hero', services: '#services', portfolio: '#portfolio' };
+const BG_OVERLAY_DEFAULT = 0.6;
+let bgOverlays = {};
+
+function loadLayoutTab() {
+  // Sample images from Unsplash (free, known to exist)
+  const SAMPLES = [
+    { url:'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=400', label:'Code / Tech' },
+    { url:'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=400', label:'Laptop Setup' },
+    { url:'https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=400', label:'Team Work' },
+    { url:'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=400', label:'Dark Code' },
+    { url:'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?w=400', label:'Monitor' },
+    { url:'https://images.unsplash.com/photo-1504639725590-34d0984388bd?w=400', label:'Keyboard' },
+    { url:'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=400', label:'Coding Night' },
+    { url:'https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?w=400', label:'Design Work' },
+    { url:'https://images.unsplash.com/photo-1531297484001-80022131f5a1?w=400', label:'Workspace' },
+  ];
+  const grid = document.getElementById('sample-imgs');
+  if (grid) {
+    grid.innerHTML = SAMPLES.map(s => `
+      <div class="sample-img-wrap" title="Click to copy URL">
+        <img class="sample-img" src="${s.url}" alt="${s.label}" onclick="copySampleImg('${s.url}',this)" loading="lazy">
+        <div class="sample-img-label">${s.label}</div>
+      </div>`).join('');
+  }
+  // Restore saved layout settings
+  const ls = S.get('layout') || {};
+  const padsl=document.getElementById('sl-pad'); if(padsl){padsl.value=ls.pad||100;document.getElementById('sl-pad-v').textContent=(ls.pad||100)+'px';}
+  const hpadsl=document.getElementById('sl-hpad'); if(hpadsl){hpadsl.value=ls.hpad||60;document.getElementById('sl-hpad-v').textContent=(ls.hpad||60)+'px';}
+  const brsl=document.getElementById('sl-br'); if(brsl){brsl.value=ls.br||0;document.getElementById('sl-br-v').textContent=(ls.br||0)+'px';}
+}
+
+function copySampleImg(url, imgEl) {
+  navigator.clipboard.writeText(url).then(() => {
+    showToast('📋 Image URL copied! Paste it in a project's image field.');
+    imgEl.style.outline='2px solid var(--accent,#00ffc8)';
+    setTimeout(()=>imgEl.style.outline='',1500);
+  }).catch(()=>{
+    // Fallback
+    const inp=document.createElement('input');inp.value=url;document.body.appendChild(inp);inp.select();document.execCommand('copy');document.body.removeChild(inp);
+    showToast('📋 URL copied!');
+  });
+}
+
+function triggerImgUpload(fileId, zoneId, section) {
+  document.getElementById(fileId)?.click();
+}
+
+function applyBgImage(input, section) {
+  const file = input.files[0]; if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    // Compress
+    const img = new Image();
+    img.onload = () => {
+      const MAX=1200; let w=img.width,h=img.height;
+      if(w>MAX){h=Math.round(h*MAX/w);w=MAX;}
+      const canvas=document.createElement('canvas');canvas.width=w;canvas.height=h;
+      canvas.getContext('2d').drawImage(img,0,0,w,h);
+      const dataURL=canvas.toDataURL('image/jpeg',0.7);
+      const secEl=document.querySelector(BG_SECTIONS[section]);
+      if(secEl){
+        const ov=bgOverlays[section]||BG_OVERLAY_DEFAULT;
+        secEl.style.backgroundImage=`linear-gradient(rgba(2,2,5,${ov}),rgba(2,2,5,${ov})),url(${dataURL})`;
+        secEl.style.backgroundSize='cover';
+        secEl.style.backgroundPosition='center';
+      }
+      // Save
+      const bgs=S.get('bgs')||{};bgs[section]=dataURL;S.set('bgs',bgs);
+      showToast(`✅ ${section} background applied!`);
+    };
+    img.src=e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+function setBgOverlay(section, val) {
+  bgOverlays[section] = val / 100;
+  const bgs = S.get('bgs')||{};
+  if (bgs[section]) {
+    const secEl=document.querySelector(BG_SECTIONS[section]);
+    if(secEl){
+      secEl.style.backgroundImage=`linear-gradient(rgba(2,2,5,${val/100}),rgba(2,2,5,${val/100})),url(${bgs[section]})`;
+    }
+  }
+}
+
+function clearBg(section) {
+  const secEl=document.querySelector(BG_SECTIONS[section]);
+  if(secEl){secEl.style.backgroundImage='';secEl.style.backgroundSize='';secEl.style.backgroundPosition='';}
+  const bgs=S.get('bgs')||{};delete bgs[section];S.set('bgs',bgs);
+  showToast(`${section} background cleared.`);
+}
+
+function applySavedBgs() {
+  const bgs=S.get('bgs')||{};
+  Object.entries(bgs).forEach(([section,dataURL])=>{
+    const secEl=document.querySelector(BG_SECTIONS[section]);
+    if(secEl&&dataURL){
+      const ov=bgOverlays[section]||BG_OVERLAY_DEFAULT;
+      secEl.style.backgroundImage=`linear-gradient(rgba(2,2,5,${ov}),rgba(2,2,5,${ov})),url(${dataURL})`;
+      secEl.style.backgroundSize='cover';secEl.style.backgroundPosition='center';
+    }
+  });
+}
+
+function livePad(v){document.getElementById('sl-pad-v').textContent=v+'px';document.querySelectorAll('section:not(#hero)').forEach(e=>{e.style.paddingTop=v+'px';e.style.paddingBottom=v+'px';});}
+function liveHPad(v){document.getElementById('sl-hpad-v').textContent=v+'px';document.querySelectorAll('section:not(#hero)').forEach(e=>{e.style.paddingLeft=v+'px';e.style.paddingRight=v+'px';});}
+function liveBR(v){document.getElementById('sl-br-v').textContent=v+'px';document.querySelectorAll('.svc-c,.pj-c,.pr-c,.cb-card,.bk-w,.ct-ch,.ali').forEach(e=>e.style.borderRadius=v+'px');}
+
+function saveLayout(){
+  const p=document.getElementById('sl-pad');const hp=document.getElementById('sl-hpad');const br=document.getElementById('sl-br');
+  S.set('layout',{pad:parseInt(p?.value||100),hpad:parseInt(hp?.value||60),br:parseInt(br?.value||0)});
+  showToast('✅ Layout saved!');
+}
+
+function applySavedLayout(){
+  const ls=S.get('layout')||{};
+  if(ls.pad)livePad(ls.pad);
+  if(ls.hpad)liveHPad(ls.hpad);
+  if(ls.br)liveBR(ls.br);
+}
+
+// ═══════════════════════════════════════════════════
+// OVERRIDE doLogin to use openAdmPanel
+// ═══════════════════════════════════════════════════
+const _origDoLogin = typeof doLogin === 'function' ? doLogin : null;
+function doLogin() {
+  const pw = document.getElementById('adm-pw').value;
+  const s = gSet();
+  if (pw === (s.adminpw || 'coco2026')) {
+    closeLogin();
+    openAdmPanel();
+  } else {
+    document.getElementById('login-err').style.display = 'block';
+  }
+}
+
+// ═══════════════════════════════════════════════════
+// APPLY ALL SAVED ON BOOT
+// ═══════════════════════════════════════════════════
+function applyAllSaved() {
+  applySavedColors();
+  applySavedFonts2();
+  applySavedText2();
+  applySavedBgs();
+  applySavedLayout();
+}
+
+</script>
 <script>
 // ════════════════════════════════════
 // DATA STORE
